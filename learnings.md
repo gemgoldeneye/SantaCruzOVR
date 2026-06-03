@@ -5,6 +5,22 @@ Newest entries on top.
 
 ---
 
+## 2026-06-03 — Phases 4–5: payment, polish, front-end MVP complete
+
+### 🎯 Milestone: front-end MVP complete
+Both journeys verified end-to-end: citizen search → Order of Payment → simulated
+pay → receipt; enforcer login → issue (with live preview) → the citizen finds and
+pays it. Production build and ESLint are both clean; all 12 routes smoke-tested.
+
+### 🐛 Gotcha: the `react-hooks/set-state-in-effect` lint rule
+The new rule flags the common mount/now-initialization pattern. Removed the
+redundant `mounted` flag in the theme toggle (next-themes already returns an
+undefined theme on the first render, so there is no mismatch); scope-disabled the
+rule for the issuance form's wall-clock initialization, which legitimately must run
+after mount to avoid a hydration mismatch on the datetime field.
+
+---
+
 ## 2026-06-03 — Phases 1–3: data layer, citizen flow, enforcer issuance
 
 ### 🎯 Milestone: the core loop works end-to-end

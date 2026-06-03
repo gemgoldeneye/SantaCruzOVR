@@ -7,7 +7,7 @@ import { copy } from "@/lib/i18n/en";
 
 export function CitizenHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
+    <header className="no-print sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
       <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Link href="/citizen" className="flex items-center gap-2.5">
           <Seal className="size-8 shrink-0" />

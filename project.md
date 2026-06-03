@@ -2,6 +2,9 @@
 
 **Municipality of Iba, Zambales**
 
+> **Status (2026-06-03):** Front-end MVP complete — Phases 0–5 built and verified
+> (build + lint clean). Next: the Prisma/SQLite backend and real authentication.
+
 A modern web application for **issuing, looking up, and settling** traffic and
 city/municipality ordinance violation tickets online. It modernizes the
 Quezon City e-Services "OVR Online Payment" flow (see `reference/` for the

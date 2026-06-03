@@ -150,8 +150,11 @@ export function IssuanceForm({
   const [isPending, startTransition] = React.useTransition();
 
   React.useEffect(() => {
+    // Initialize from wall-clock time after mount to avoid an SSR/client mismatch.
+    /* eslint-disable react-hooks/set-state-in-effect */
     setMounted(true);
     setApprehendedLocal(nowManilaLocalInput());
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   function toggle(code: string, checked: boolean) {

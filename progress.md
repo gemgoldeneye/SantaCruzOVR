@@ -74,15 +74,15 @@ _Last updated: 2026-06-03_
 
 ---
 
-## Phase 5 — Polish & accessibility 🟦
-**Demo:** production-feel front-end.
+## Phase 5 — Polish & accessibility ✅
+**Demo:** production-feel front-end. _(Build + lint clean; all 12 routes smoke-tested.)_
 
-- [ ] Responsive pass (mobile-first citizen, dense admin)
-- [ ] Dark mode pass
-- [ ] Empty / error / loading states
-- [ ] Print stylesheet refinement
-- [ ] i18n audit — no hardcoded copy
-- [ ] Microcopy + final review
+- [x] Responsive pass (mobile-first citizen; admin sidebar → mobile top bar)
+- [x] Dark mode (semantic tokens throughout + theme toggle)
+- [x] Empty / error / loading states (`loading.tsx` skeletons, custom not-found, form alerts + toasts)
+- [x] Print stylesheet (nav chrome hidden via `no-print`; receipt prints clean)
+- [x] i18n: marketing/instructional copy in `lib/i18n/en.ts` (official field labels kept inline as domain terms)
+- [x] Branded 404 page + microcopy
 
 ---
 

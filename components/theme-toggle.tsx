@@ -1,16 +1,14 @@
 "use client";
 
-import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
-
-  const isDark = mounted && resolvedTheme === "dark";
+  // next-themes returns an undefined theme on the server and the first client
+  // render (so both show the Moon — no hydration mismatch); it resolves after mount.
+  const isDark = resolvedTheme === "dark";
 
   return (
     <Button

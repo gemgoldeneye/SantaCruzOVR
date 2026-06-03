@@ -105,7 +105,7 @@ export function AdminSidebar() {
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-sidebar-border bg-sidebar p-3 md:flex">
+      <aside className="no-print fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r border-sidebar-border bg-sidebar p-3 md:flex">
         <div className="px-2 py-2">
           <Brand />
         </div>
@@ -124,7 +124,7 @@ export function AdminSidebar() {
       </aside>
 
       {/* Mobile top bar */}
-      <header className="sticky top-0 z-40 flex items-center justify-between gap-2 border-b border-sidebar-border bg-sidebar px-3 py-2 text-sidebar-foreground md:hidden">
+      <header className="no-print sticky top-0 z-40 flex items-center justify-between gap-2 border-b border-sidebar-border bg-sidebar px-3 py-2 text-sidebar-foreground md:hidden">
         <Brand />
         <div className="flex items-center gap-1">
           <NavLinks orientation="h" />
