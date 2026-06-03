@@ -16,7 +16,7 @@ the `Ticket` type in `lib/types.ts`.
 
 ## Conventions
 - **Data access only via the `DataStore` interface** (`lib/data/`). Today it's a
-  server-side mock (`mock.ts` + `store.json`); later it's Prisma. Never read/write
+  in-memory server-side mock (`mock.ts`, a `globalThis` singleton); later it's Prisma. Never read/write
   data from components directly — use Server Components (reads) + Server Actions (writes).
 - **All municipality strings/rules live in `lib/config/iba.ts`.** Don't hardcode
   office names, fines, prefixes, or due windows elsewhere.

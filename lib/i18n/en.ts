@@ -53,6 +53,28 @@ export const copy = {
     notFoundTitle: "No matching ticket",
     notFoundBody:
       "We couldn't find a ticket with that number and last name. Check your details and try again.",
+    home: {
+      title: "Find and settle your violation receipt",
+      subtitle:
+        "Enter your OVR ticket number and last name to view your Order of Payment and pay online.",
+      searchCta: "Find my ticket",
+      step1Title: "Find your ticket",
+      step1Body: "Search using your OVR ticket number and last name.",
+      step2Title: "Review the details",
+      step2Body: "Check the violation, the basic fines, and any surcharge.",
+      step3Title: "Pay online",
+      step3Body: "Settle via GCash, Maya, or Landbank and keep your receipt.",
+    },
+    ticket: {
+      orderOfPayment: "Order of Payment",
+      violationDetails: "Violation details",
+      reminders: "Reminders & end-user notice",
+      payFine: "Pay fine",
+      printReceipt: "Print receipt",
+      viewReceipt: "View / print receipt",
+      backToSearch: "Back to search",
+      alreadyPaid: "This ticket has already been paid.",
+    },
   },
   admin: {
     portal: "Enforcer Portal",

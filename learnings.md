@@ -20,9 +20,11 @@ shown three ways. The whole architecture is built around one canonical `Ticket`.
 - **Server-side mock, not localStorage.** Prisma is server-only; a browser-only
   mock would force a full client-render and a separate API layer at swap time,
   and would break the cross-device "enforcer issues → citizen looks up" story.
-  The mock runs server-side (in-memory + `store.json`) behind a `DataStore`
-  interface, accessed via Server Components (reads) + Server Actions (writes) —
-  exactly where Prisma will live, so the later swap is a one-file change.
+  The mock runs server-side (in-memory `globalThis` singleton) behind a
+  `DataStore` interface, accessed via Server Components (reads) + Server Actions
+  (writes) — exactly where Prisma will live, so the later swap is a one-file
+  change. (Chose an in-memory singleton over a JSON file to avoid Turbopack's dev
+  watcher reloading on every write; durable persistence arrives with Prisma.)
 - **Re-branding via one config file** (`lib/config/iba.ts`) so the app can be
   pointed at any LGU.
 - **Stack/scope confirmed with the user:** Next.js + Tailwind + shadcn; SQLite +

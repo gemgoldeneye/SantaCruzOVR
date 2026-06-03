@@ -99,7 +99,7 @@ components/
 lib/
   types.ts                 the canonical Ticket model (the linchpin)
   ids.ts · penalty.ts      number generation + surcharge math (pure)
-  data/                    DataStore interface + mock store (+ store.json) + factory
+  data/                    DataStore interface + in-memory mock store + factory
   config/iba.ts            ALL municipality strings & rules (one place to re-brand)
   i18n/en.ts               copy dictionary
 reference/                 original QC sample screens (design reference)

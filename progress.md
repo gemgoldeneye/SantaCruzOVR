@@ -7,7 +7,7 @@ _Last updated: 2026-06-03_
 
 ---
 
-## Phase 0 — Scaffold & foundations 🟦
+## Phase 0 — Scaffold & foundations ✅
 **Demo:** branded landing page with the two-portal choice.
 
 - [x] Scaffold Next.js 16 + TypeScript + Tailwind v4 (into a temp folder, then merged into the repo root)
@@ -22,37 +22,38 @@ _Last updated: 2026-06-03_
 - [x] Landing page (`app/page.tsx`)
 - [x] `project.md`, `progress.md`, `learnings.md`
 - [x] Production build passes
-- [ ] `git init` + initial commit
+- [x] `git init` + initial commit
 
 ---
 
-## Phase 1 — Domain model & mock data layer ⬜
-**Demo:** create a ticket and search it back through the mock store.
+## Phase 1 — Domain model & mock data layer ✅
+**Demo:** create a ticket and search it back through the mock store. _(Verified via self-test: surcharge math, paid state, and search all correct.)_
 
-- [ ] `lib/types.ts` — canonical `Ticket`, `ViolationCatalogItem`, `IssuedViolation`, `Violator`, `Officer`, `Payment`, `TicketStatus`
-- [ ] `lib/ids.ts` — OVR Ticket No. / Order of Payment No. / Bill No. generators
-- [ ] `lib/penalty.ts` — pure `computeCharges()` (basic fines + 5%/month surcharge)
-- [ ] `lib/money.ts` (or util) — ₱ formatter with tabular numerals
-- [ ] `DataStore` interface (`lib/data/store.ts`)
-- [ ] Server-side `mockStore` + `store.json` persistence (`lib/data/mock.ts`)
-- [ ] Seed data: ~12 catalog items, officers, 2–3 example tickets (`lib/data/seed.ts`)
-- [ ] Factory `lib/data/index.ts`
-
----
-
-## Phase 2 — Citizen flow UI ⬜
-**Demo:** look up a seeded ticket, view the Order of Payment, print the receipt.
-
-- [ ] Citizen layout/shell (friendly header + footer)
-- [ ] `/citizen` home — hero + "how it works"
-- [ ] `/citizen/search` — ticket no. + last name + End-User Agreement
-- [ ] `/citizen/ticket/[ovrTicketNo]` — Order of Payment view
-- [ ] `/citizen/ticket/[ovrTicketNo]/receipt` — printable receipt
-- [ ] Shared: `TicketReceipt`, `ViolationsTable`, `StatusBadge`, `Money`, `OfficialHeader`
+- [x] `lib/types.ts` — `TicketRecord` (stored) + enriched `Ticket`, catalog, violation, violator, officer, payment, status
+- [x] `lib/ids.ts` — OVR Ticket No. / Order of Payment No. / Bill No. / payment-ref generators
+- [x] `lib/penalty.ts` — pure `computeCharges()` (basic fines + 5%/month surcharge)
+- [x] `lib/format.ts` — ₱ formatter, TZ-pinned dates, name helpers
+- [x] `DataStore` interface (`lib/data/store.ts`)
+- [x] Server-side in-memory `mockStore` (globalThis singleton) (`lib/data/mock.ts`)
+- [x] Seed data: 14 catalog items, 3 officers, 3 example tickets (`lib/data/seed.ts`)
+- [x] Factory `lib/data/index.ts`
 
 ---
 
-## Phase 3 — Admin shell + issuance form (CORE) ⬜
+## Phase 2 — Citizen flow UI ✅
+**Demo:** look up a seeded ticket, view the Order of Payment, print the receipt. _(Verified: overdue ticket renders ₱1,500 + ₱300 surcharge = ₱1,800; receipt prints.)_
+
+- [x] Citizen layout/shell (friendly header + footer)
+- [x] `/citizen` home — hero + "how it works"
+- [x] `/citizen/search` — ticket no. + last name + End-User Agreement (server action)
+- [x] `/citizen/ticket/[ovrTicketNo]` — Order of Payment view (last-name gated via `?ln=`)
+- [x] `/citizen/ticket/[ovrTicketNo]/receipt` — printable receipt + print button
+- [x] Shared: `TicketReceipt`, `ViolationsTable`, `StatusBadge`, `Money`, `AmountSummary`, `OfficialHeader`, `Seal`
+- [ ] _Pay-fine link targets `/pay` (built in Phase 4)_
+
+---
+
+## Phase 3 — Admin shell + issuance form (CORE) 🟦
 **Demo:** issue a ticket in `/admin`, then find it on the citizen side.
 
 - [ ] Admin layout/shell (sidebar, staff chrome)
