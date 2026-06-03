@@ -9,7 +9,16 @@ searches & pays → printable receipt).
 
 ```bash
 npm install
-npm run dev   # if port 3000 is busy, Next auto-picks 3001 — watch the console
+npm run dev          # single server on http://localhost:4300 (both portals)
+```
+
+To run the two portals on **separate ports** (handy alongside other local
+projects on 3000/3001), use two terminals — they share the same ticket data:
+
+```bash
+npm run dev:citizen  # http://localhost:4310  →  open /citizen
+npm run dev:admin    # http://localhost:4320  →  open /admin
+npm run dev:both     # both at once (Ctrl-C stops both)
 ```
 
 - **Citizen portal:** `/citizen` (public) — search a ticket, view the Order of
@@ -17,10 +26,14 @@ npm run dev   # if port 3000 is busy, Next auto-picks 3001 — watch the console
 - **Enforcer portal:** `/admin` — sign in (`enforcer` / `iba2026`), issue tickets
   with a live preview, manage issued tickets.
 
+Both ports read/write one shared store, so a ticket issued in the admin portal is
+immediately found in the citizen portal.
+
 ### Demo data
 Tickets `IBA-2026-000001` (Guiwo — outstanding), `IBA-2026-000002` (Kamaro —
-overdue + surcharge), `IBA-2026-000003` (Delos Reyes — paid). The store is
-in-memory, so **data resets when the dev server restarts**.
+overdue + surcharge), `IBA-2026-000003` (Delos Reyes — paid). Data persists in
+`/tmp/eovr-store.json` (override with `EOVR_STORE_FILE`); **delete that file to
+reset to the seed data.**
 
 ## Scripts
 - `npm run dev` — dev server (Turbopack)

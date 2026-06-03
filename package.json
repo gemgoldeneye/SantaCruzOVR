@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "EOVR_STORE_FILE=/tmp/eovr-store.json next dev -p 4300",
+    "dev:citizen": "EOVR_STORE_FILE=/tmp/eovr-store.json NEXT_DIST_DIR=.next-citizen next dev -p 4310",
+    "dev:admin": "EOVR_STORE_FILE=/tmp/eovr-store.json NEXT_DIST_DIR=.next-admin next dev -p 4320",
+    "dev:both": "(trap 'kill 0' SIGINT EXIT; npm run dev:citizen & npm run dev:admin & wait)",
     "build": "next build",
-    "start": "next start",
+    "start": "EOVR_STORE_FILE=/tmp/eovr-store.json next start -p 4300",
     "lint": "eslint"
   },
   "dependencies": {

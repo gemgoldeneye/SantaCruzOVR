@@ -1,17 +1,21 @@
 /**
  * Server-side mock implementation of `DataStore`.
  *
- * State lives in a `globalThis` singleton so it persists across requests and
- * across dev hot-reloads (the standard Next.js singleton pattern). It is
- * intentionally in-memory: it gives true cross-device behavior (every client
- * hits the same server) and a clean slate on restart. Durable cross-restart
- * persistence arrives with the Prisma/SQLite backend, swapped in behind this
- * same interface — UI code is unaffected.
+ * State is persisted to a small JSON file in the OS temp dir (override with
+ * `EOVR_STORE_FILE`). Using a file rather than process memory means several dev
+ * servers — e.g. the citizen portal and the admin portal on different ports —
+ * read and write the SAME data, so a ticket issued on one is found on the other.
+ * The file lives OUTSIDE the project so it never triggers a dev-server reload.
+ * Durable, multi-process persistence here is also the stepping stone to the
+ * Prisma/SQLite backend, which swaps in behind this same interface.
  *
- * Because reads recompute status/penalty against "now", a ticket's surcharge is
- * always current without any stored value going stale.
+ * Reads recompute status/penalty against "now", so a ticket's surcharge is always
+ * current without any stored value going stale.
  */
 
+import { promises as fs } from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import type {
   Officer,
   Ticket,
@@ -42,22 +46,52 @@ import {
 import { addDays, fullName } from "@/lib/format";
 import { RULES } from "@/lib/config/iba";
 
+const STORE_PATH =
+  process.env.EOVR_STORE_FILE || path.join(os.tmpdir(), "eovr-store.json");
+const SEED_VERSION = 1; // bump to re-seed after changing seed data
+
 interface StoreShape {
+  version: number;
   counter: number;
   tickets: TicketRecord[];
 }
 
-const g = globalThis as unknown as { __eovrStore?: StoreShape };
-
-function db(): StoreShape {
-  if (!g.__eovrStore) {
-    g.__eovrStore = {
-      counter: SEED_NEXT_SEQ,
-      tickets: structuredClone(SEED_TICKETS),
-    };
-  }
-  return g.__eovrStore;
+function seeded(): StoreShape {
+  return {
+    version: SEED_VERSION,
+    counter: SEED_NEXT_SEQ,
+    tickets: structuredClone(SEED_TICKETS),
+  };
 }
+
+async function readStore(): Promise<StoreShape> {
+  try {
+    const raw = await fs.readFile(STORE_PATH, "utf8");
+    const data = JSON.parse(raw) as StoreShape;
+    if (
+      !data ||
+      data.version !== SEED_VERSION ||
+      !Array.isArray(data.tickets) ||
+      typeof data.counter !== "number"
+    ) {
+      const fresh = seeded();
+      await writeStore(fresh);
+      return fresh;
+    }
+    return data;
+  } catch {
+    const fresh = seeded();
+    await writeStore(fresh);
+    return fresh;
+  }
+}
+
+async function writeStore(data: StoreShape): Promise<void> {
+  await fs.writeFile(STORE_PATH, JSON.stringify(data, null, 2), "utf8");
+}
+
+const round2 = (n: number) => Math.round(n * 100) / 100;
+const norm = (s: string) => s.trim().toLowerCase();
 
 /** Enrich a stored record with live-derived status and charges. */
 function enrich(rec: TicketRecord, asOf: Date): Ticket {
@@ -88,9 +122,6 @@ function enrich(rec: TicketRecord, asOf: Date): Ticket {
   };
 }
 
-const round2 = (n: number) => Math.round(n * 100) / 100;
-const norm = (s: string) => s.trim().toLowerCase();
-
 export const mockStore: DataStore = {
   async listViolationCatalog(category?: ViolationCategory) {
     const items: ViolationCatalogItem[] = category
@@ -108,7 +139,7 @@ export const mockStore: DataStore = {
   },
 
   async createTicket(input: NewTicketInput) {
-    const store = db();
+    const store = await readStore();
     const now = new Date();
     const seq = store.counter;
 
@@ -152,11 +183,13 @@ export const mockStore: DataStore = {
 
     store.tickets.unshift(rec);
     store.counter += 1;
+    await writeStore(store);
     return enrich(rec, now);
   },
 
   async searchTicket(ovrTicketNo: string, lastName: string) {
-    const rec = db().tickets.find(
+    const store = await readStore();
+    const rec = store.tickets.find(
       (t) =>
         norm(t.ovrTicketNo) === norm(ovrTicketNo) &&
         norm(t.violator.lastName) === norm(lastName),
@@ -165,14 +198,16 @@ export const mockStore: DataStore = {
   },
 
   async getTicketByNo(ovrTicketNo: string) {
-    const rec = db().tickets.find((t) => norm(t.ovrTicketNo) === norm(ovrTicketNo));
+    const store = await readStore();
+    const rec = store.tickets.find((t) => norm(t.ovrTicketNo) === norm(ovrTicketNo));
     return rec ? enrich(rec, new Date()) : null;
   },
 
   async listTickets(filter?: TicketFilter) {
+    const store = await readStore();
     const now = new Date();
-    let items = db()
-      .tickets.map((r) => enrich(r, now))
+    let items = store.tickets
+      .map((r) => enrich(r, now))
       .sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
@@ -194,7 +229,8 @@ export const mockStore: DataStore = {
   },
 
   async payTicket(ovrTicketNo: string, payment: NewPaymentInput) {
-    const rec = db().tickets.find((t) => norm(t.ovrTicketNo) === norm(ovrTicketNo));
+    const store = await readStore();
+    const rec = store.tickets.find((t) => norm(t.ovrTicketNo) === norm(ovrTicketNo));
     if (!rec) throw new Error("Ticket not found.");
     const now = new Date();
     if (rec.paymentStatus === "PAID") return enrich(rec, now); // idempotent
@@ -212,6 +248,7 @@ export const mockStore: DataStore = {
       referenceNo: makePaymentRef(payment.method, now),
       paidAt: now.toISOString(),
     };
+    await writeStore(store);
     return enrich(rec, now);
   },
 

@@ -10,14 +10,18 @@
 
 ```bash
 npm install
-npm run dev   # if port 3000 is busy, Next auto-picks 3001 — watch the console
+npm run dev          # single server on http://localhost:4300 (both portals)
+# …or run the portals on separate ports (shared data; two terminals):
+npm run dev:citizen  # http://localhost:4310  → /citizen
+npm run dev:admin    # http://localhost:4320  → /admin
 ```
 
 - **Enforcer login:** `enforcer` / `iba2026`
 - **Demo tickets:** `IBA-2026-000001` (Guiwo — outstanding), `IBA-2026-000002`
   (Kamaro — overdue + surcharge), `IBA-2026-000003` (Delos Reyes — paid)
-- The store is **in-memory: data resets when the dev server restarts** (this is
-  expected; durable persistence arrives with the Prisma phase).
+- Both ports share one store, so a ticket issued in `/admin` is found in
+  `/citizen`. Data persists in `/tmp/eovr-store.json` (override with
+  `EOVR_STORE_FILE`); delete it to reset to the seed data.
 
 **Recommended click-through** (with the browser DevTools console open, watching for
 hydration warnings): sign in at `/admin/login` → issue a ticket with a violation

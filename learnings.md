@@ -5,6 +5,25 @@ Newest entries on top.
 
 ---
 
+## 2026-06-03 — Separate dev ports for citizen & admin (shared file store)
+
+Per request, the portals can run on their own ports so they don't collide with
+other local projects (which hold 3000/3001): `dev:citizen` → 4310, `dev:admin` →
+4320, and `dev` → 4300 (both portals in one server).
+
+### 🧭 Key change: file-backed mock store
+Two dev servers are two processes, so the in-memory singleton would NOT share data
+— a ticket issued on the admin port wouldn't appear on the citizen port. Switched
+the mock to a small JSON file at `/tmp/eovr-store.json` (override via
+`EOVR_STORE_FILE`), read/written per operation, so all processes share one store.
+The file lives outside the project so it never triggers a dev-server reload, and
+each server gets its own `NEXT_DIST_DIR` (`.next-citizen` / `.next-admin`) so two
+`next dev` instances don't clobber `.next`. Verified: created `IBA-2026-000004` on
+:4320, found it on :4310. Bonus — data now survives restarts (delete the file to
+reset to seeds).
+
+---
+
 ## 2026-06-03 — Phases 4–5: payment, polish, front-end MVP complete
 
 ### 🎯 Milestone: front-end MVP complete
