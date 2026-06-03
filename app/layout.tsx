@@ -24,6 +24,11 @@ export const metadata: Metadata = {
   description: copy.app.description,
 };
 
+// Applies the saved/system theme before hydration to avoid a flash. This lives in
+// the server-rendered layout (not a client component), so React never client-renders
+// the <script> and won't warn about scripts inside React components.
+const NO_FLASH_THEME = `(function(){try{var k="theme",t=localStorage.getItem(k)||"system",m=window.matchMedia("(prefers-color-scheme: dark)").matches,d=t==="dark"||(t==="system"&&m),e=document.documentElement;e.classList.toggle("dark",d);e.style.colorScheme=d?"dark":"light"}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,12 +41,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME }} />
+        <ThemeProvider>
           {children}
           <Toaster position="top-center" richColors />
         </ThemeProvider>
