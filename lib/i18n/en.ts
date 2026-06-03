@@ -75,6 +75,15 @@ export const copy = {
       backToSearch: "Back to search",
       alreadyPaid: "This ticket has already been paid.",
     },
+    pay: {
+      title: "Pay your fine",
+      subtitle: "Choose a payment method to settle this violation.",
+      choose: "Choose payment method",
+      payNow: "Pay",
+      processing: "Processing payment…",
+      secure: "Simulated checkout — no real payment is processed.",
+      success: "Payment successful — your receipt is ready.",
+    },
   },
   admin: {
     portal: "Enforcer Portal",

@@ -65,16 +65,16 @@ _Last updated: 2026-06-03_
 
 ---
 
-## Phase 4 — Simulated payment + receipt 🟦
-**Demo:** pay a ticket end-to-end; status flips to PAID with a reference no.
+## Phase 4 — Simulated payment + receipt ✅
+**Demo:** pay a ticket end-to-end; status flips to PAID with a reference no. _(Verified: IBA-2026-000001 OUTSTANDING → PAID via GCash, ref GCA-…, receipt shows "Payment successful".)_
 
-- [ ] `/citizen/ticket/[ovrTicketNo]/pay` — method tiles + simulated processing
-- [ ] `payTicket` Server Action → status `PAID`, payment ref
-- [ ] Receipt reflects payment
+- [x] `/citizen/ticket/[ovrTicketNo]/pay` — method tiles (GCash/Maya/Landbank/OTC) + processing state
+- [x] `payTicket` Server Action (last-name authorized) → status `PAID`, payment ref, `revalidatePath`
+- [x] Receipt reflects payment (success banner, amount paid, reference)
 
 ---
 
-## Phase 5 — Polish & accessibility ⬜
+## Phase 5 — Polish & accessibility 🟦
 **Demo:** production-feel front-end.
 
 - [ ] Responsive pass (mobile-first citizen, dense admin)
