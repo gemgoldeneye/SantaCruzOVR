@@ -8,9 +8,12 @@ Newest entries on top.
 ## 2026-06-03 — Phases 4–5: payment, polish, front-end MVP complete
 
 ### 🎯 Milestone: front-end MVP complete
-Both journeys verified end-to-end: citizen search → Order of Payment → simulated
-pay → receipt; enforcer login → issue (with live preview) → the citizen finds and
-pays it. Production build and ESLint are both clean; all 12 routes smoke-tested.
+Both journeys built and verified at the **data + Server Action layer**: citizen
+search → Order of Payment → simulated pay → receipt; enforcer login → issue (with
+live preview) → the citizen finds and pays it. Production build and ESLint are clean;
+all 12 routes smoke-tested via SSR. **Still pending:** an interactive browser pass
+(form submit + client hydration) — no browser-automation tool is available in this
+environment, so that last layer is verified-by-construction, not exercised.
 
 ### 🐛 Gotcha: the `react-hooks/set-state-in-effect` lint rule
 The new rule flags the common mount/now-initialization pattern. Removed the

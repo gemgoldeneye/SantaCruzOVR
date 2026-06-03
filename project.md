@@ -2,8 +2,27 @@
 
 **Municipality of Iba, Zambales**
 
-> **Status (2026-06-03):** Front-end MVP complete — Phases 0–5 built and verified
-> (build + lint clean). Next: the Prisma/SQLite backend and real authentication.
+> **Status (2026-06-03):** Front-end MVP complete — Phases 0–5 built; build + lint
+> clean and data/Server-Action paths verified. A 60-second browser click-through is
+> still recommended (see below). Next: the Prisma/SQLite backend and real auth.
+
+## Quick start
+
+```bash
+npm install
+npm run dev   # if port 3000 is busy, Next auto-picks 3001 — watch the console
+```
+
+- **Enforcer login:** `enforcer` / `iba2026`
+- **Demo tickets:** `IBA-2026-000001` (Guiwo — outstanding), `IBA-2026-000002`
+  (Kamaro — overdue + surcharge), `IBA-2026-000003` (Delos Reyes — paid)
+- The store is **in-memory: data resets when the dev server restarts** (this is
+  expected; durable persistence arrives with the Prisma phase).
+
+**Recommended click-through** (with the browser DevTools console open, watching for
+hydration warnings): sign in at `/admin/login` → issue a ticket with a violation
+ticked → confirm → copy the generated `IBA-2026-…` number → `/citizen/search` that
+number + the last name → pay.
 
 A modern web application for **issuing, looking up, and settling** traffic and
 city/municipality ordinance violation tickets online. It modernizes the
