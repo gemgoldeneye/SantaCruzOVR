@@ -49,7 +49,7 @@ _Last updated: 2026-06-03_
 - [x] `/citizen/ticket/[ovrTicketNo]` — Order of Payment view (last-name gated via `?ln=`)
 - [x] `/citizen/ticket/[ovrTicketNo]/receipt` — printable receipt + print button
 - [x] Shared: `TicketReceipt`, `ViolationsTable`, `StatusBadge`, `Money`, `AmountSummary`, `OfficialHeader`, `Seal`
-- [ ] _Pay-fine link targets `/pay` (built in Phase 4)_
+- [x] _Pay-fine link → `/pay` (built in Phase 4)_
 
 ---
 
