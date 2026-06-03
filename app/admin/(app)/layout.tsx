@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { isAdminAuthed } from "@/lib/auth";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { SiteHeader } from "@/components/shared/site-header";
+import { AdminNav } from "@/components/admin/admin-nav";
 
 export default async function AdminAppLayout({
   children,
@@ -12,11 +13,11 @@ export default async function AdminAppLayout({
   }
 
   return (
-    <div className="min-h-dvh bg-muted/30 print:bg-transparent">
-      <AdminSidebar />
-      <div className="flex min-h-dvh flex-col md:pl-60 print:pl-0">
-        <main className="flex-1">{children}</main>
-      </div>
+    <div className="flex min-h-dvh flex-col bg-muted/30 print:bg-transparent">
+      <SiteHeader homeHref="/admin">
+        <AdminNav />
+      </SiteHeader>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }

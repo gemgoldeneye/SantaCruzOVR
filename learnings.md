@@ -15,6 +15,11 @@ Kept: the **real municipal seal** extracted from the screenshot at `public/iba-s
 **merge into a single header** (one bar with the navy/seal + nav + theme), don't add a
 second one.
 
+**Follow-up (same day):** did exactly that — replaced the masthead, the per-section app
+bars, and the admin sidebar with one navy `SiteHeader` (real seal + e-OVR identity &
+meaning + context nav + theme toggle) on landing/citizen/admin. The real seal also shows
+on the printed receipt via `OfficialHeader`.
+
 ---
 
 ## 2026-06-03 — Separate dev ports for citizen & admin (shared file store)

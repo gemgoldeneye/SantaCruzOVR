@@ -1,4 +1,5 @@
-import { CitizenHeader } from "@/components/citizen/citizen-header";
+import { SiteHeader } from "@/components/shared/site-header";
+import { CitizenNav } from "@/components/citizen/citizen-nav";
 import { MUNICIPALITY } from "@/lib/config/iba";
 
 export default function CitizenLayout({
@@ -8,7 +9,9 @@ export default function CitizenLayout({
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <CitizenHeader />
+      <SiteHeader homeHref="/citizen">
+        <CitizenNav />
+      </SiteHeader>
       <main className="flex-1">{children}</main>
       <footer className="no-print border-t border-border/60 py-6">
         <div className="mx-auto w-full max-w-5xl px-4 text-xs text-muted-foreground sm:px-6">

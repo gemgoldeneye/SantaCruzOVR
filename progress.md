@@ -89,3 +89,7 @@ _Last updated: 2026-06-03_
 ## Later (post front-end)
 - [ ] Phase 6 — Prisma/SQLite backend behind `DataStore`
 - [ ] Phase 7 — Real authentication
+
+## Enhancements (post-MVP) ✅
+- [x] Separate dev ports — citizen (4310) & admin (4320) — with a shared file-backed store
+- [x] Single official navy (#03045a) `SiteHeader` across landing/citizen/admin: real Iba seal + e-OVR identity & meaning + context nav + theme toggle (replaced the per-section bars and the admin sidebar — one header, no duplication)
