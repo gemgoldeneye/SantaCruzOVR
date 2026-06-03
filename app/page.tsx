@@ -14,7 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Seal } from "@/components/shared/seal";
+import { GovMasthead } from "@/components/shared/gov-masthead";
+import { EovrMark } from "@/components/shared/eovr-mark";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { MUNICIPALITY } from "@/lib/config/iba";
@@ -23,26 +24,22 @@ import { copy } from "@/lib/i18n/en";
 export default function Home() {
   return (
     <div className="flex min-h-dvh flex-col">
-      {/* Top bar */}
+      <GovMasthead />
+      {/* e-OVR app bar */}
       <header className="border-b border-border/60 bg-card/40 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-3">
-            <Seal className="size-9" />
-            <div className="leading-tight">
-              <p className="text-sm font-semibold tracking-tight">
-                {MUNICIPALITY.name}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {MUNICIPALITY.province}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="mr-1 hidden rounded-full bg-brand/15 px-2.5 py-1 text-xs font-medium text-brand sm:inline-block">
-              {copy.app.name}
+        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-2.5 sm:px-6">
+          <Link href="/" className="flex items-center gap-2.5">
+            <EovrMark />
+            <span className="leading-tight">
+              <span className="block text-sm font-bold tracking-tight">
+                {copy.app.name}
+              </span>
+              <span className="block text-[0.7rem] text-muted-foreground">
+                {copy.app.tagline}
+              </span>
             </span>
-            <ThemeToggle />
-          </div>
+          </Link>
+          <ThemeToggle />
         </div>
       </header>
 

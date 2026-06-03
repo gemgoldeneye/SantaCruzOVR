@@ -9,6 +9,7 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    ".next-*/**", // per-server dev build caches (dev:citizen / dev:admin)
     "out/**",
     "build/**",
     "next-env.d.ts",

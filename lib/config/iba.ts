@@ -18,6 +18,17 @@ export const MUNICIPALITY = {
   region: "Region III (Central Luzon)",
 } as const;
 
+/**
+ * Official program seals shown on the right of the masthead (as in the real
+ * Iba site). Drop the real PNGs at the given paths under /public/ to replace
+ * the placeholders.
+ */
+export const OFFICIAL_SEALS = [
+  { id: "foi", label: "Freedom of Information", src: "/seals/foi.png" },
+  { id: "transparency", label: "Transparency Seal", src: "/seals/transparency-seal.png" },
+  { id: "bagong-pilipinas", label: "Bagong Pilipinas", src: "/seals/bagong-pilipinas.png" },
+] as const;
+
 /** Offices referenced on tickets and receipts. Edit to match Iba's actual org. */
 export const OFFICES = {
   /** Issues/enforces violations. */

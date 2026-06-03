@@ -89,3 +89,7 @@ _Last updated: 2026-06-03_
 ## Later (post front-end)
 - [ ] Phase 6 — Prisma/SQLite backend behind `DataStore`
 - [ ] Phase 7 — Real authentication
+
+## Enhancements (post-MVP) ✅
+- [x] Separate dev ports — citizen (4310) & admin (4320) — with a shared file-backed store
+- [x] Official navy (#03045a) `GovMasthead`: seal, RP/Municipality/Province, live PST clock, official-seal slots; merged with the e-OVR app bar; real Iba seal extracted to `public/iba-seal.png`

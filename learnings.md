@@ -5,6 +5,28 @@ Newest entries on top.
 
 ---
 
+## 2026-06-03 — Official government masthead + real Iba seal
+
+Reproduced the Municipality of Iba's official header from a provided screenshot:
+- Sampled the exact navy (**#03045a**), added a fixed `--gov` token, and unified the
+  admin sidebar to it.
+- New `GovMasthead` on landing/citizen/admin: municipal seal + Republic / Municipality /
+  Province titles, a live **PST clock**, and official-program seal slots (placeholders
+  that prefer `/public/seals/*.png`). A thin brand accent rule sits under the navy.
+- Merged with the e-OVR identity via a slim app bar (receipt mark + "Online Ordinance
+  Violation Receipt" tagline) so the product meaning stays clear under the official banner.
+- Extracted the **real municipal seal** from the screenshot (cropped; corner navy
+  flood-filled to transparent) → `public/iba-seal.png`, used by both the masthead and the
+  printed receipt via `MunicipalSeal` (falls back to the SVG emblem if the file is absent).
+
+### 🐛 Gotcha: ESLint linted the per-server build caches
+`dev:citizen` / `dev:admin` create `.next-citizen` / `.next-admin`, which ESLint's ignore
+list didn't cover (only `.next`) → ~14k phantom errors from generated code. Added
+`.next-*/**` to `globalIgnores`. The masthead is `no-print` so it doesn't double the
+receipt's own official header.
+
+---
+
 ## 2026-06-03 — Separate dev ports for citizen & admin (shared file store)
 
 Per request, the portals can run on their own ports so they don't collide with
