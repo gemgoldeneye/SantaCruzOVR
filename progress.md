@@ -53,19 +53,19 @@ _Last updated: 2026-06-03_
 
 ---
 
-## Phase 3 — Admin shell + issuance form (CORE) 🟦
-**Demo:** issue a ticket in `/admin`, then find it on the citizen side.
+## Phase 3 — Admin shell + issuance form (CORE) ✅
+**Demo:** issue a ticket in `/admin`, then find it on the citizen side. _(Verified: real `createTicketAction` issued `IBA-2026-000004`; citizen `searchTicket` found it.)_
 
-- [ ] Admin layout/shell (sidebar, staff chrome)
-- [ ] `/admin/login` — mock enforcer login
-- [ ] `/admin` — dashboard (stat cards + recent tickets)
-- [ ] `/admin/tickets` — filterable ticket list
-- [ ] `/admin/tickets/new` — **issuance form** (violator, apprehension, violations + details) with **live ticket preview** and confirm (Server Action)
-- [ ] `/admin/tickets/[ovrTicketNo]` — detail/review (+ view-as-citizen, print)
+- [x] Admin layout/shell (sidebar, staff chrome, mobile top bar) + `server-only` guard on the data layer
+- [x] `/admin/login` — mock enforcer login (cookie) + auth guard via `(app)` route group
+- [x] `/admin` — dashboard (stat cards + recent tickets)
+- [x] `/admin/tickets` — filterable ticket list (status tabs + search)
+- [x] `/admin/tickets/new` — **issuance form** with **live ticket preview** + confirm (Server Action, `revalidatePath`)
+- [x] `/admin/tickets/[ovrTicketNo]` — detail/review (view-as-citizen, print)
 
 ---
 
-## Phase 4 — Simulated payment + receipt ⬜
+## Phase 4 — Simulated payment + receipt 🟦
 **Demo:** pay a ticket end-to-end; status flips to PAID with a reference no.
 
 - [ ] `/citizen/ticket/[ovrTicketNo]/pay` — method tiles + simulated processing

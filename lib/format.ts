@@ -56,3 +56,29 @@ export function addDays(date: Date, days: number): Date {
   d.setDate(d.getDate() + days);
   return d;
 }
+
+/**
+ * A `<input type="datetime-local">` value carries no timezone. Interpret it as
+ * Manila local time and normalize to a UTC ISO string so the preview and the
+ * stored value always agree.
+ */
+export function localToManilaISO(local: string): string {
+  if (!local) return new Date().toISOString();
+  const withSeconds = local.length === 16 ? `${local}:00` : local;
+  return new Date(`${withSeconds}+08:00`).toISOString();
+}
+
+/** Current Manila time formatted for a datetime-local input ("YYYY-MM-DDTHH:mm"). */
+export function nowManilaLocalInput(): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: RULES.timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "00";
+  return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}`;
+}

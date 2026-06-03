@@ -5,6 +5,34 @@ Newest entries on top.
 
 ---
 
+## 2026-06-03 — Phases 1–3: data layer, citizen flow, enforcer issuance
+
+### 🎯 Milestone: the core loop works end-to-end
+An enforcer issues a ticket; the citizen finds it by ticket number + last name and
+sees the Order of Payment. Verified browserlessly by invoking the real
+`createTicketAction` and confirming the citizen `searchTicket` resolves the new
+number (issued `IBA-2026-000004` → found, ₱2,000, "Reckless Driving").
+
+### 💡 Live preview = the citizen's view
+The issuance form renders a live `Ticket` (via `toPreviewTicket`) through the same
+components the citizen sees — "one record, three views," updating as the enforcer types.
+
+### 🧭 Decisions
+- `server-only` guard on `lib/data` so the store can never leak into a client bundle.
+- Seed data fetched in a Server Component and passed to the client `<IssuanceForm>`;
+  confirm calls a Server Action that `revalidatePath`s the admin views, then redirects.
+- Mock admin auth via a single cookie; protected routes live under an `(app)` route
+  group so `/admin/login` sits outside the guard (no redirect loop).
+- Native `<select>` for the officer field — robust in forms, avoids Base UI Select API risk.
+
+### 🐛 Gotchas
+- App Router **private folders**: a route folder prefixed with `_` is excluded from
+  routing → 404. Renamed without the underscore.
+- No browser-automation tool in this environment, so the final UI click-through is
+  unverified by automation; the data + Server Action path is fully verified instead.
+
+---
+
 ## 2026-06-03 — Project kickoff & Phase 0
 
 ### 🎯 Milestone: foundation scaffolded and building

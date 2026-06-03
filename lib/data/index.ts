@@ -8,6 +8,8 @@
  * are needed.
  */
 
+import "server-only"; // fail loudly if the store is ever imported into a client bundle
+
 import type { DataStore } from "@/lib/data/store";
 import { mockStore } from "@/lib/data/mock";
 
