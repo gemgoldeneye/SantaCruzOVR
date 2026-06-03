@@ -5,25 +5,15 @@ Newest entries on top.
 
 ---
 
-## 2026-06-03 — Official government masthead + real Iba seal
+## 2026-06-03 — Reverted the official masthead (redundant)
 
-Reproduced the Municipality of Iba's official header from a provided screenshot:
-- Sampled the exact navy (**#03045a**), added a fixed `--gov` token, and unified the
-  admin sidebar to it.
-- New `GovMasthead` on landing/citizen/admin: municipal seal + Republic / Municipality /
-  Province titles, a live **PST clock**, and official-program seal slots (placeholders
-  that prefer `/public/seals/*.png`). A thin brand accent rule sits under the navy.
-- Merged with the e-OVR identity via a slim app bar (receipt mark + "Online Ordinance
-  Violation Receipt" tagline) so the product meaning stays clear under the official banner.
-- Extracted the **real municipal seal** from the screenshot (cropped; corner navy
-  flood-filled to transparent) → `public/iba-seal.png`, used by both the masthead and the
-  printed receipt via `MunicipalSeal` (falls back to the SVG emblem if the file is absent).
-
-### 🐛 Gotcha: ESLint linted the per-server build caches
-`dev:citizen` / `dev:admin` create `.next-citizen` / `.next-admin`, which ESLint's ignore
-list didn't cover (only `.next`) → ~14k phantom errors from generated code. Added
-`.next-*/**` to `globalIgnores`. The masthead is `no-print` so it doesn't double the
-receipt's own official header.
+Built a navy (#03045a) `GovMasthead` (seal + Republic/Municipality/Province + live PST
+clock + official-seal slots) above each page's app bar — but it stacked a second header
+over the existing one, which read as redundant, so it was reverted at the user's request.
+Kept: the **real municipal seal** extracted from the screenshot at `public/iba-seal.png`
+(`MUNICIPALITY.sealSrc` points to it) and the screenshot in `reference/`. If revisited,
+**merge into a single header** (one bar with the navy/seal + nav + theme), don't add a
+second one.
 
 ---
 

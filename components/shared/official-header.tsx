@@ -1,10 +1,10 @@
-import { MunicipalSeal } from "@/components/shared/municipal-seal";
+import { Seal } from "@/components/shared/seal";
 import { MUNICIPALITY, OFFICES } from "@/lib/config/iba";
 
 export function OfficialHeader() {
   return (
     <div className="flex items-center justify-center gap-4 text-center">
-      <MunicipalSeal className="size-16 shrink-0" />
+      <Seal className="size-16 shrink-0" />
       <div className="space-y-0.5">
         <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">
           {MUNICIPALITY.country}

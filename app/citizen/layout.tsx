@@ -1,4 +1,3 @@
-import { GovMasthead } from "@/components/shared/gov-masthead";
 import { CitizenHeader } from "@/components/citizen/citizen-header";
 import { MUNICIPALITY } from "@/lib/config/iba";
 
@@ -9,7 +8,6 @@ export default function CitizenLayout({
 }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <GovMasthead />
       <CitizenHeader />
       <main className="flex-1">{children}</main>
       <footer className="no-print border-t border-border/60 py-6">
