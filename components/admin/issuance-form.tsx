@@ -238,7 +238,7 @@ export function IssuanceForm({
             <TextField id="lastName" label="Last name" value={lastName} onChange={setLastName} required />
             <TextField id="license" label="License number" value={licenseNumber} onChange={setLicenseNumber} required placeholder="N03-12-345678" />
             <div className="sm:col-span-2">
-              <TextField id="address" label="Address" value={address} onChange={setAddress} required placeholder="Zone, barangay, Iba, Zambales" />
+              <TextField id="address" label="Address" value={address} onChange={setAddress} required placeholder="Purok, barangay, Santa Cruz, Zambales" />
             </div>
             <TextField id="plate" label="Plate number" value={plateNumber} onChange={setPlateNumber} placeholder="ABC 1234" />
             <TextField id="contact" label="Contact number" value={contactNo} onChange={setContactNo} placeholder="0917 555 0000" />
@@ -280,7 +280,7 @@ export function IssuanceForm({
               </select>
             </div>
             <div className="sm:col-span-2">
-              <TextField id="place" label="Place of violation" value={placeOfViolation} onChange={setPlaceOfViolation} placeholder="Street / landmark, Iba" />
+              <TextField id="place" label="Place of violation" value={placeOfViolation} onChange={setPlaceOfViolation} placeholder="Street / landmark, Santa Cruz" />
             </div>
           </CardContent>
         </Card>

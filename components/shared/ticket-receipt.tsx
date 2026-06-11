@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Money } from "@/components/shared/money";
 import { Separator } from "@/components/ui/separator";
 import { formalName, formatDate, formatDateTime } from "@/lib/format";
-import { MUNICIPALITY, OFFICES } from "@/lib/config/iba";
+import { MUNICIPALITY, OFFICES } from "@/lib/config/santa-cruz";
 import { cn } from "@/lib/utils";
 import type { Ticket } from "@/lib/types";
 

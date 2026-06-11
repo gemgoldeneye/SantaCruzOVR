@@ -4,7 +4,7 @@
  * identically and avoid hydration mismatches.
  */
 
-import { RULES } from "@/lib/config/iba";
+import { RULES } from "@/lib/config/santa-cruz";
 import type { Violator } from "@/lib/types";
 
 const pesoFmt = new Intl.NumberFormat(RULES.locale, {

@@ -7,18 +7,18 @@
  */
 
 export const MUNICIPALITY = {
-  name: "Municipality of Iba",
+  name: "Municipality of Santa Cruz",
   province: "Zambales",
-  fullName: "Municipality of Iba, Zambales",
-  shortName: "Iba",
-  /** Drop the official seal PNG at /public/iba-seal.png to replace the placeholder. */
-  sealSrc: "/iba-seal.png",
+  fullName: "Municipality of Santa Cruz, Zambales",
+  shortName: "Santa Cruz",
+  /** Drop the official seal PNG at /public/santa-cruz-seal.png to replace the placeholder. */
+  sealSrc: "/santa-cruz-seal.png",
   tagline: "Online Ordinance Violation Receipt",
   country: "Republic of the Philippines",
   region: "Region III (Central Luzon)",
 } as const;
 
-/** Offices referenced on tickets and receipts. Edit to match Iba's actual org. */
+/** Offices referenced on tickets and receipts. Edit to match Santa Cruz's actual org. */
 export const OFFICES = {
   /** Issues/enforces violations. */
   enforcement: {
@@ -31,16 +31,16 @@ export const OFFICES = {
     abbr: "MTO",
     redemptionCenter: "OVR Redemption Center, Municipal Treasurer's Office",
     address:
-      "Ground Floor, Iba Municipal Hall, Zone 4, Iba, Zambales",
+      "Ground Floor, Santa Cruz Municipal Hall, Poblacion South, Santa Cruz, Zambales",
     hours: "Monday to Friday, 8:00 AM – 5:00 PM",
-    email: "treasury@iba.gov.ph",
+    email: "treasury@santacruz-zambales.gov.ph",
   },
 } as const;
 
 /** Ticket / numbering and assessment rules. */
 export const RULES = {
-  /** Prefix for OVR ticket numbers, e.g. IBA-2026-000123. */
-  idPrefix: "IBA",
+  /** Prefix for OVR ticket numbers, e.g. STC-2026-000123. */
+  idPrefix: "STC",
   /** Days from assessment until payment is due. */
   dueWindowDays: 7,
   /** Monthly surcharge rate applied after the due date (5% / month). */
@@ -69,6 +69,6 @@ export type PaymentMethodId = (typeof PAYMENT_METHODS)[number]["id"];
 /** Mock enforcer credentials for the admin portal (front-end only). */
 export const DEMO_ADMIN = {
   username: "enforcer",
-  password: "iba2026",
-  hint: "Demo login — username: enforcer · password: iba2026",
+  password: "stacruz2026",
+  hint: "Demo login — username: enforcer · password: stacruz2026",
 } as const;

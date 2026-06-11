@@ -7,7 +7,7 @@
 
 import { computeCharges } from "@/lib/penalty";
 import { addDays } from "@/lib/format";
-import { RULES } from "@/lib/config/iba";
+import { RULES } from "@/lib/config/santa-cruz";
 import type {
   Officer,
   Ticket,

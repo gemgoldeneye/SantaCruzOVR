@@ -1,12 +1,12 @@
 /**
  * Number generation for tickets, derived from the sample documents.
- *  - OVR Ticket No.:      IBA-2026-000123
- *  - Order of Payment No: IBA-2026-000123-01   (ticket no. + "-01")
+ *  - OVR Ticket No.:      STC-2026-000123
+ *  - Order of Payment No: STC-2026-000123-01   (ticket no. + "-01")
  *  - Bill No.:            M-2026-06-03-POSO-A176-000123
  *  - Payment reference:   GCA-20260603-142233
  */
 
-import { RULES } from "@/lib/config/iba";
+import { RULES } from "@/lib/config/santa-cruz";
 import type { PaymentMethod } from "@/lib/types";
 
 const pad = (n: number, len: number) => String(n).padStart(len, "0");

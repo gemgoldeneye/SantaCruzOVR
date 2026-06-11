@@ -24,7 +24,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Money } from "@/components/shared/money";
-import { PAYMENT_METHODS, type PaymentMethodId } from "@/lib/config/iba";
+import { PAYMENT_METHODS, type PaymentMethodId } from "@/lib/config/santa-cruz";
 import { copy } from "@/lib/i18n/en";
 import { cn } from "@/lib/utils";
 

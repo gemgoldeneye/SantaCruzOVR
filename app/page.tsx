@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { SiteHeader } from "@/components/shared/site-header";
 import { cn } from "@/lib/utils";
-import { MUNICIPALITY } from "@/lib/config/iba";
+import { MUNICIPALITY } from "@/lib/config/santa-cruz";
 import { copy } from "@/lib/i18n/en";
 
 export default function Home() {

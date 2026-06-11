@@ -6,7 +6,7 @@
  * penalty is zero; once overdue, each started month since apprehension adds 5%.
  */
 
-import { RULES } from "@/lib/config/iba";
+import { RULES } from "@/lib/config/santa-cruz";
 
 const MS_PER_DAY = 86_400_000;
 

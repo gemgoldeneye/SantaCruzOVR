@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { MunicipalSeal } from "@/components/shared/municipal-seal";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { MUNICIPALITY } from "@/lib/config/iba";
+import { MUNICIPALITY } from "@/lib/config/santa-cruz";
 import { copy } from "@/lib/i18n/en";
 
 /**

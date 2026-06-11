@@ -44,10 +44,10 @@ import {
   makePaymentRef,
 } from "@/lib/ids";
 import { addDays, fullName } from "@/lib/format";
-import { RULES } from "@/lib/config/iba";
+import { RULES } from "@/lib/config/santa-cruz";
 
 const STORE_PATH =
-  process.env.EOVR_STORE_FILE || path.join(os.tmpdir(), "eovr-store.json");
+  process.env.EOVR_STORE_FILE || path.join(os.tmpdir(), "stacruz-eovr-store.json");
 const SEED_VERSION = 1; // bump to re-seed after changing seed data
 
 interface StoreShape {

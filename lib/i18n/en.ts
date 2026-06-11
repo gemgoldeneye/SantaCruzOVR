@@ -32,7 +32,7 @@ export const copy = {
   landing: {
     heroTitle: "Settle violations online — fast, clear, and official.",
     heroSubtitle:
-      "The Municipality of Iba's modern portal for traffic and ordinance violation receipts.",
+      "The Municipality of Santa Cruz's modern portal for traffic and ordinance violation receipts.",
     citizenCardTitle: "I have a ticket",
     citizenCardBody:
       "Look up your Ordinance Violation Receipt, review the details, and pay your fine online.",

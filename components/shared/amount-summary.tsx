@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { Money } from "@/components/shared/money";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { RULES } from "@/lib/config/iba";
+import { RULES } from "@/lib/config/santa-cruz";
 import type { Ticket } from "@/lib/types";
 
 function Row({

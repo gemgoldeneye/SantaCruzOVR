@@ -1,16 +1,16 @@
 import { cn } from "@/lib/utils";
 
 /**
- * Placeholder municipal emblem for Iba, Zambales — a coastal "sun over waves"
+ * Placeholder municipal emblem for Santa Cruz, Zambales — a coastal "sun over waves"
  * mark in the brand palette. Swap for the official seal by dropping a raster at
- * /public/iba-seal.png and rendering it where this component is used.
+ * /public/santa-cruz-seal.png and rendering it where this component is used.
  */
 export function Seal({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 64 64"
       role="img"
-      aria-label="Municipality of Iba seal"
+      aria-label="Municipality of Santa Cruz seal"
       className={cn("size-10", className)}
     >
       <circle

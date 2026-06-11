@@ -1,6 +1,6 @@
 import { SiteHeader } from "@/components/shared/site-header";
 import { CitizenNav } from "@/components/citizen/citizen-nav";
-import { MUNICIPALITY } from "@/lib/config/iba";
+import { MUNICIPALITY } from "@/lib/config/santa-cruz";
 
 export default function CitizenLayout({
   children,

@@ -19,7 +19,7 @@ import { AmountSummary } from "@/components/shared/amount-summary";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { TicketNotFound } from "@/components/citizen/ticket-not-found";
 import { formalName, formatDate, formatDateTime } from "@/lib/format";
-import { OFFICES } from "@/lib/config/iba";
+import { OFFICES } from "@/lib/config/santa-cruz";
 import { copy } from "@/lib/i18n/en";
 import { cn } from "@/lib/utils";
 

@@ -16,7 +16,7 @@ _Last updated: 2026-06-03_
 - [x] Coastal-civic color palette in `app/globals.css` (navy primary, teal brand, success/warning tokens, print utilities)
 - [x] Theme provider + theme toggle (light/dark/system via `next-themes`)
 - [x] Root layout: fonts (Geist), metadata, `Toaster`
-- [x] `lib/config/iba.ts` — central municipality config (offices, rules, payment methods, demo login)
+- [x] `lib/config/santa-cruz.ts` — central municipality config (offices, rules, payment methods, demo login)
 - [x] `lib/i18n/en.ts` — copy dictionary scaffold
 - [x] Placeholder municipal seal (`components/shared/seal.tsx`)
 - [x] Landing page (`app/page.tsx`)
@@ -54,7 +54,7 @@ _Last updated: 2026-06-03_
 ---
 
 ## Phase 3 — Admin shell + issuance form (CORE) ✅
-**Demo:** issue a ticket in `/admin`, then find it on the citizen side. _(Verified: real `createTicketAction` issued `IBA-2026-000004`; citizen `searchTicket` found it.)_
+**Demo:** issue a ticket in `/admin`, then find it on the citizen side. _(Verified: real `createTicketAction` issued `STC-2026-000004`; citizen `searchTicket` found it.)_
 
 - [x] Admin layout/shell (sidebar, staff chrome, mobile top bar) + `server-only` guard on the data layer
 - [x] `/admin/login` — mock enforcer login (cookie) + auth guard via `(app)` route group
@@ -66,7 +66,7 @@ _Last updated: 2026-06-03_
 ---
 
 ## Phase 4 — Simulated payment + receipt ✅
-**Demo:** pay a ticket end-to-end; status flips to PAID with a reference no. _(Verified: IBA-2026-000001 OUTSTANDING → PAID via GCash, ref GCA-…, receipt shows "Payment successful".)_
+**Demo:** pay a ticket end-to-end; status flips to PAID with a reference no. _(Verified: STC-2026-000001 OUTSTANDING → PAID via GCash, ref GCA-…, receipt shows "Payment successful".)_
 
 - [x] `/citizen/ticket/[ovrTicketNo]/pay` — method tiles (GCash/Maya/Landbank/OTC) + processing state
 - [x] `payTicket` Server Action (last-name authorized) → status `PAID`, payment ref, `revalidatePath`
@@ -91,5 +91,5 @@ _Last updated: 2026-06-03_
 - [ ] Phase 7 — Real authentication
 
 ## Enhancements (post-MVP) ✅
-- [x] Separate dev ports — citizen (4310) & admin (4320) — with a shared file-backed store
-- [x] Single official navy (#03045a) `SiteHeader` across landing/citizen/admin: real Iba seal + e-OVR identity & meaning + context nav + theme toggle (replaced the per-section bars and the admin sidebar — one header, no duplication)
+- [x] Separate dev ports — citizen (4410) & admin (4420) — with a shared file-backed store
+- [x] Single official navy (#03045a) `SiteHeader` across landing/citizen/admin: real Santa Cruz seal + e-OVR identity & meaning + context nav + theme toggle (replaced the per-section bars and the admin sidebar — one header, no duplication)

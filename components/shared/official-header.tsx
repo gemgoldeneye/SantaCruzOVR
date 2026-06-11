@@ -1,5 +1,5 @@
 import { MunicipalSeal } from "@/components/shared/municipal-seal";
-import { MUNICIPALITY, OFFICES } from "@/lib/config/iba";
+import { MUNICIPALITY, OFFICES } from "@/lib/config/santa-cruz";
 
 export function OfficialHeader() {
   return (

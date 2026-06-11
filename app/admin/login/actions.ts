@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { ADMIN_COOKIE } from "@/lib/auth";
-import { DEMO_ADMIN } from "@/lib/config/iba";
+import { DEMO_ADMIN } from "@/lib/config/santa-cruz";
 
 export interface LoginState {
   error?: string;

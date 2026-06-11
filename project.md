@@ -1,6 +1,6 @@
 # e-OVR — Online Ordinance Violation Receipt
 
-**Municipality of Iba, Zambales**
+**Municipality of Santa Cruz, Zambales**
 
 > **Status (2026-06-03):** Front-end MVP complete — Phases 0–5 built; build + lint
 > clean and data/Server-Action paths verified. A 60-second browser click-through is
@@ -10,22 +10,22 @@
 
 ```bash
 npm install
-npm run dev          # single server on http://localhost:4300 (both portals)
+npm run dev          # single server on http://localhost:4400 (both portals)
 # …or run the portals on separate ports (shared data; two terminals):
-npm run dev:citizen  # http://localhost:4310  → /citizen
-npm run dev:admin    # http://localhost:4320  → /admin
+npm run dev:citizen  # http://localhost:4410  → /citizen
+npm run dev:admin    # http://localhost:4420  → /admin
 ```
 
-- **Enforcer login:** `enforcer` / `iba2026`
-- **Demo tickets:** `IBA-2026-000001` (Guiwo — outstanding), `IBA-2026-000002`
-  (Kamaro — overdue + surcharge), `IBA-2026-000003` (Delos Reyes — paid)
+- **Enforcer login:** `enforcer` / `stacruz2026`
+- **Demo tickets:** `STC-2026-000001` (Guiwo — outstanding), `STC-2026-000002`
+  (Kamaro — overdue + surcharge), `STC-2026-000003` (Delos Reyes — paid)
 - Both ports share one store, so a ticket issued in `/admin` is found in
-  `/citizen`. Data persists in `/tmp/eovr-store.json` (override with
+  `/citizen`. Data persists in `/tmp/stacruz-eovr-store.json` (override with
   `EOVR_STORE_FILE`); delete it to reset to the seed data.
 
 **Recommended click-through** (with the browser DevTools console open, watching for
 hydration warnings): sign in at `/admin/login` → issue a ticket with a violation
-ticked → confirm → copy the generated `IBA-2026-…` number → `/citizen/search` that
+ticked → confirm → copy the generated `STC-2026-…` number → `/citizen/search` that
 number + the last name → pay.
 
 A modern web application for **issuing, looking up, and settling** traffic and
@@ -87,12 +87,12 @@ fine owed. Key concepts:
 
 - **Violation catalog** — the schedule of ordinance codes, titles, and basic
   fines that enforcers pick from (e.g. `A25 S1-9`, ₱500). *Seeded values are
-  placeholders from the QC samples; replace with Iba's real schedule later.*
+  placeholders from the QC samples; replace with Santa Cruz's real schedule later.*
 - **Ticket** — one issued record: violator, apprehension date/time, officer, the
   ticked violations (+ enforcer details), generated numbers, dates, and totals.
 - **Penalty** — a **5% / month surcharge** applied from the apprehension date
   once a ticket is past its due date.
-- **Numbers** — OVR Ticket No. (`IBA-2026-000123`), Order of Payment No.
+- **Numbers** — OVR Ticket No. (`STC-2026-000123`), Order of Payment No.
   (`…-01`), and Bill No. — all generated when a ticket is confirmed.
 
 ---
@@ -107,7 +107,7 @@ fine owed. Key concepts:
 | Data flow | **Server Components (reads) + Server Actions (writes)** | Mock lives where Prisma will, so no UI rewrite at swap. |
 | Payment | **Simulated checkout** | Realistic UI, no real money. |
 | Language | **English-first, i18n-ready** | All copy in `lib/i18n/en.ts`. |
-| Admin auth | **Mock login** | `lib/config/iba.ts` → `DEMO_ADMIN`. |
+| Admin auth | **Mock login** | `lib/config/santa-cruz.ts` → `DEMO_ADMIN`. |
 
 ---
 
@@ -126,7 +126,7 @@ lib/
   types.ts                 the canonical Ticket model (the linchpin)
   ids.ts · penalty.ts      number generation + surcharge math (pure)
   data/                    DataStore interface + in-memory mock store + factory
-  config/iba.ts            ALL municipality strings & rules (one place to re-brand)
+  config/santa-cruz.ts            ALL municipality strings & rules (one place to re-brand)
   i18n/en.ts               copy dictionary
 reference/                 original QC sample screens (design reference)
 ```
@@ -140,7 +140,7 @@ Actions are unchanged.
 
 ## 7. Re-branding for another LGU
 
-Everything municipality-specific lives in **`lib/config/iba.ts`**: name,
+Everything municipality-specific lives in **`lib/config/santa-cruz.ts`**: name,
 province, seal asset, office names (POSO/MTO), ID prefix, due window, surcharge
 rate, currency, and demo credentials. Point those at another LGU and the app
 re-skins itself.

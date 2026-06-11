@@ -63,8 +63,8 @@ export type TicketStatus = "OUTSTANDING" | "OVERDUE" | "PAID" | "CONTESTED";
 /** The persisted ticket — immutable facts plus payment state. */
 export interface TicketRecord {
   // system-generated identifiers
-  ovrTicketNo: string; // "IBA-2026-000123"
-  orderOfPaymentNo: string; // "IBA-2026-000123-01"
+  ovrTicketNo: string; // "STC-2026-000123"
+  orderOfPaymentNo: string; // "STC-2026-000123-01"
   billNo: string; // "M-2026-06-03-POSO-A176-000123"
   // enforcer-entered
   violator: Violator;

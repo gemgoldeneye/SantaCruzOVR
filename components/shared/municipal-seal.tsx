@@ -2,11 +2,11 @@
 
 import * as React from "react";
 import { Seal } from "@/components/shared/seal";
-import { MUNICIPALITY } from "@/lib/config/iba";
+import { MUNICIPALITY } from "@/lib/config/santa-cruz";
 import { cn } from "@/lib/utils";
 
 /**
- * Renders the official municipal seal from `/public/iba-seal.png` when present,
+ * Renders the official municipal seal from `/public/santa-cruz-seal.png` when present,
  * falling back to the placeholder SVG emblem if the image is missing.
  */
 export function MunicipalSeal({ className }: { className?: string }) {

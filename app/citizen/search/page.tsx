@@ -48,7 +48,7 @@ export default function SearchPage() {
               <Input
                 id="ticketNo"
                 name="ticketNo"
-                placeholder="IBA-2026-000001"
+                placeholder="STC-2026-000001"
                 autoComplete="off"
                 required
               />
@@ -133,9 +133,9 @@ export default function SearchPage() {
       </Card>
 
       <p className="mt-4 text-center text-xs text-muted-foreground">
-        Demo tickets — <span className="font-mono">IBA-2026-000001</span> (Guiwo),{" "}
-        <span className="font-mono">IBA-2026-000002</span> (Kamaro),{" "}
-        <span className="font-mono">IBA-2026-000003</span> (Delos Reyes).
+        Demo tickets — <span className="font-mono">STC-2026-000001</span> (Guiwo),{" "}
+        <span className="font-mono">STC-2026-000002</span> (Kamaro),{" "}
+        <span className="font-mono">STC-2026-000003</span> (Delos Reyes).
       </p>
     </div>
   );

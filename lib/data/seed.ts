@@ -3,7 +3,7 @@
  *
  * NOTE: the violation codes below are PLACEHOLDERS — two are copied from the QC
  * sample documents (`A25 …`) and the rest are plausible stand-ins. Replace this
- * catalog with the Municipality of Iba's actual ordinance schedule before any
+ * catalog with the Municipality of Santa Cruz's actual ordinance schedule before any
  * real use.
  */
 
@@ -112,20 +112,20 @@ export const SEED_NEXT_SEQ = 4;
 export const SEED_TICKETS: TicketRecord[] = [
   // 1 — recently issued, within the due window → OUTSTANDING
   {
-    ovrTicketNo: "IBA-2026-000001",
-    orderOfPaymentNo: "IBA-2026-000001-01",
+    ovrTicketNo: "STC-2026-000001",
+    orderOfPaymentNo: "STC-2026-000001-01",
     billNo: "M-2026-06-01-POSO-A176-000001",
     violator: {
       firstName: "Ramil",
       middleName: "Vinarao",
       lastName: "Guiwo",
-      address: "Zone 5, Amungan, Iba, Zambales",
+      address: "Purok 3, Poblacion North, Santa Cruz, Zambales",
       licenseNumber: "N03-12-345678",
       plateNumber: "ABC 1234",
       contactNo: "0917 555 0101",
     },
     apprehendedAt: "2026-06-01T09:15:00+08:00",
-    placeOfViolation: "Rizal Ave. cor. Zamora St., Iba",
+    placeOfViolation: "National Highway cor. Rizal St., Santa Cruz",
     officer: OFFICERS[0],
     violations: [
       {
@@ -143,19 +143,19 @@ export const SEED_TICKETS: TicketRecord[] = [
   },
   // 2 — apprehended months ago, unpaid → OVERDUE (surcharge accrues)
   {
-    ovrTicketNo: "IBA-2026-000002",
-    orderOfPaymentNo: "IBA-2026-000002-01",
+    ovrTicketNo: "STC-2026-000002",
+    orderOfPaymentNo: "STC-2026-000002-01",
     billNo: "M-2026-02-06-POSO-B204-000002",
     violator: {
       firstName: "Gian",
       middleName: "Reyes",
       lastName: "Kamaro",
-      address: "Purok 2, Palanginan, Iba, Zambales",
+      address: "Purok 2, Lipay, Santa Cruz, Zambales",
       licenseNumber: "D12-98-765432",
       plateNumber: "XYZ 5678",
     },
     apprehendedAt: "2026-02-06T14:42:00+08:00",
-    placeOfViolation: "Public Market loading bay, Iba",
+    placeOfViolation: "Public Market loading bay, Santa Cruz",
     officer: OFFICERS[1],
     violations: [
       {
@@ -179,20 +179,20 @@ export const SEED_TICKETS: TicketRecord[] = [
   },
   // 3 — paid within the due window → PAID
   {
-    ovrTicketNo: "IBA-2026-000003",
-    orderOfPaymentNo: "IBA-2026-000003-01",
+    ovrTicketNo: "STC-2026-000003",
+    orderOfPaymentNo: "STC-2026-000003-01",
     billNo: "M-2026-05-20-POSO-C091-000003",
     violator: {
       firstName: "Maria",
       middleName: "Clara",
       lastName: "Delos Reyes",
-      address: "Zone 6, Bangantalinga, Iba, Zambales",
+      address: "Sitio Proper, Bolitoc, Santa Cruz, Zambales",
       licenseNumber: "N01-22-334455",
       plateNumber: "MNL 2468",
       contactNo: "0928 555 0199",
     },
     apprehendedAt: "2026-05-20T16:05:00+08:00",
-    placeOfViolation: "Bangantalinga junction, Iba",
+    placeOfViolation: "Bolitoc junction, Santa Cruz",
     officer: OFFICERS[2],
     violations: [
       {

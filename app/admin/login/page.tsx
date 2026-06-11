@@ -17,7 +17,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Seal } from "@/components/shared/seal";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { MUNICIPALITY, DEMO_ADMIN } from "@/lib/config/iba";
+import { MUNICIPALITY, DEMO_ADMIN } from "@/lib/config/santa-cruz";
 import { copy } from "@/lib/i18n/en";
 
 export default function AdminLoginPage() {

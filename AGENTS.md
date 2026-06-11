@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # e-OVR — agent guide
 
-Online Ordinance Violation Receipt for the Municipality of Iba, Zambales.
+Online Ordinance Violation Receipt for the Municipality of Santa Cruz, Zambales.
 Full context: see `project.md`. Live status: `progress.md`. Decisions/gotchas: `learnings.md`.
 
 ## Core model — read this first
@@ -18,7 +18,7 @@ the `Ticket` type in `lib/types.ts`.
 - **Data access only via the `DataStore` interface** (`lib/data/`). Today it's a
   in-memory server-side mock (`mock.ts`, a `globalThis` singleton); later it's Prisma. Never read/write
   data from components directly — use Server Components (reads) + Server Actions (writes).
-- **All municipality strings/rules live in `lib/config/iba.ts`.** Don't hardcode
+- **All municipality strings/rules live in `lib/config/santa-cruz.ts`.** Don't hardcode
   office names, fines, prefixes, or due windows elsewhere.
 - **All user-facing copy lives in `lib/i18n/en.ts`** (i18n-ready). No hardcoded strings in components.
 - **UI:** Tailwind v4 + shadcn/ui (Base UI). Note Base UI `Button` has no `asChild` —

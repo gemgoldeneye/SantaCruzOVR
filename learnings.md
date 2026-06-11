@@ -10,7 +10,7 @@ Newest entries on top.
 Built a navy (#03045a) `GovMasthead` (seal + Republic/Municipality/Province + live PST
 clock + official-seal slots) above each page's app bar — but it stacked a second header
 over the existing one, which read as redundant, so it was reverted at the user's request.
-Kept: the **real municipal seal** extracted from the screenshot at `public/iba-seal.png`
+Kept: the **real municipal seal** extracted from the screenshot at `public/santa-cruz-seal.png`
 (`MUNICIPALITY.sealSrc` points to it) and the screenshot in `reference/`. If revisited,
 **merge into a single header** (one bar with the navy/seal + nav + theme), don't add a
 second one.
@@ -25,18 +25,18 @@ on the printed receipt via `OfficialHeader`.
 ## 2026-06-03 — Separate dev ports for citizen & admin (shared file store)
 
 Per request, the portals can run on their own ports so they don't collide with
-other local projects (which hold 3000/3001): `dev:citizen` → 4310, `dev:admin` →
-4320, and `dev` → 4300 (both portals in one server).
+other local projects (which hold 3000/3001): `dev:citizen` → 4410, `dev:admin` →
+4420, and `dev` → 4400 (both portals in one server).
 
 ### 🧭 Key change: file-backed mock store
 Two dev servers are two processes, so the in-memory singleton would NOT share data
 — a ticket issued on the admin port wouldn't appear on the citizen port. Switched
-the mock to a small JSON file at `/tmp/eovr-store.json` (override via
+the mock to a small JSON file at `/tmp/stacruz-eovr-store.json` (override via
 `EOVR_STORE_FILE`), read/written per operation, so all processes share one store.
 The file lives outside the project so it never triggers a dev-server reload, and
 each server gets its own `NEXT_DIST_DIR` (`.next-citizen` / `.next-admin`) so two
-`next dev` instances don't clobber `.next`. Verified: created `IBA-2026-000004` on
-:4320, found it on :4310. Bonus — data now survives restarts (delete the file to
+`next dev` instances don't clobber `.next`. Verified: created `STC-2026-000004` on
+:4420, found it on :4410. Bonus — data now survives restarts (delete the file to
 reset to seeds).
 
 ---
@@ -66,7 +66,7 @@ after mount to avoid a hydration mismatch on the datetime field.
 An enforcer issues a ticket; the citizen finds it by ticket number + last name and
 sees the Order of Payment. Verified browserlessly by invoking the real
 `createTicketAction` and confirming the citizen `searchTicket` resolves the new
-number (issued `IBA-2026-000004` → found, ₱2,000, "Reckless Driving").
+number (issued `STC-2026-000004` → found, ₱2,000, "Reckless Driving").
 
 ### 💡 Live preview = the citizen's view
 The issuance form renders a live `Ticket` (via `toPreviewTicket`) through the same
@@ -108,7 +108,7 @@ shown three ways. The whole architecture is built around one canonical `Ticket`.
   (writes) — exactly where Prisma will live, so the later swap is a one-file
   change. (Chose an in-memory singleton over a JSON file to avoid Turbopack's dev
   watcher reloading on every write; durable persistence arrives with Prisma.)
-- **Re-branding via one config file** (`lib/config/iba.ts`) so the app can be
+- **Re-branding via one config file** (`lib/config/santa-cruz.ts`) so the app can be
   pointed at any LGU.
 - **Stack/scope confirmed with the user:** Next.js + Tailwind + shadcn; SQLite +
   Prisma (deferred); simulated payments; English-first (i18n-ready).
