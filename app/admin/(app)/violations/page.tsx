@@ -11,19 +11,25 @@ import {
   createViolationAction,
   updateViolationAction,
   deleteViolationAction,
+  purgeViolationAction,
 } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function ViolationsPage() {
   await requirePermission("violations:manage");
-  const violations = await store.listAllViolations();
+  const [violations, usedCodes] = await Promise.all([
+    store.listAllViolations(),
+    store.usedViolationCodes(),
+  ]);
   return (
     <ViolationsManager
       violations={violations}
+      usedCodes={usedCodes}
       createAction={createViolationAction}
       updateAction={updateViolationAction}
       deleteAction={deleteViolationAction}
+      purgeAction={purgeViolationAction}
     />
   );
 }

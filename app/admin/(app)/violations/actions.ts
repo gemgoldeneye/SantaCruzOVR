@@ -75,3 +75,20 @@ export async function deleteViolationAction(code: string) {
     };
   }
 }
+
+export async function purgeViolationAction(code: string) {
+  await requirePermission("violations:manage");
+  try {
+    await store.purgeViolation(code);
+    await logActivity("violation.purge", `Deleted violation ${code}`, {
+      targetType: "violation",
+      targetId: code,
+    });
+    revalidatePath(VIOLATIONS_PATH);
+    return {};
+  } catch (e) {
+    return {
+      error: e instanceof Error ? e.message : "Failed to delete the violation.",
+    };
+  }
+}
