@@ -1,9 +1,20 @@
 import type { NextConfig } from "next";
+import withSerwistInit from "@serwist/next";
 
+// @gelabs/ovr ships precompiled (with its RSC directives), so no transpilePackages.
+// Prisma + ioredis stay external from the server bundle.
 const nextConfig: NextConfig = {
-  // Allow each dev server (citizen / admin) its own build cache so two instances
-  // can run side by side without clobbering `.next`.
-  distDir: process.env.NEXT_DIST_DIR || ".next",
+  serverExternalPackages: ["@prisma/client", "ioredis"],
 };
 
-export default nextConfig;
+// PWA shell — precache the app so it loads offline. @serwist/next injects a WEBPACK
+// config (incompatible with Next 16's default Turbopack), so the SW builds ONLY for
+// production via `next build --webpack`; dev stays on Turbopack. The app shell is
+// cached; data calls still hit the network when online.
+export default process.env.NODE_ENV === "development"
+  ? nextConfig
+  : withSerwistInit({
+      swSrc: "app/sw.ts",
+      swDest: "public/sw.js",
+      cacheOnNavigation: true,
+    })(nextConfig);

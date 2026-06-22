@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "@/lib/ovr-ui-server"; // side-effect: sets the OVR server context before any render / generateMetadata
+import { OvrConfigProvider } from "@gelabs/ovr/ui/config";
+import { getConfig, getCopy } from "@gelabs/ovr/ui/server";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { MUNICIPALITY } from "@/lib/config/santa-cruz";
@@ -34,6 +37,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Server context already set by the side-effect import above; read it for the
+  // client provider (config + pre-merged copy are plain JSON → safe across RSC).
+  const config = getConfig();
+  const copyResolved = getCopy();
   return (
     <html
       lang="en"
@@ -42,10 +49,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH_THEME }} />
-        <ThemeProvider>
-          {children}
-          <Toaster position="top-center" richColors />
-        </ThemeProvider>
+        <OvrConfigProvider config={config} copy={copyResolved}>
+          <ThemeProvider>
+            {children}
+            <Toaster position="top-center" richColors />
+          </ThemeProvider>
+        </OvrConfigProvider>
       </body>
     </html>
   );

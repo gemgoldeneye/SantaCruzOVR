@@ -18,7 +18,13 @@ import { ViolationsTable } from "@/components/shared/violations-table";
 import { AmountSummary } from "@/components/shared/amount-summary";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { TicketNotFound } from "@/components/citizen/ticket-not-found";
-import { formalName, formatDate, formatDateTime } from "@/lib/format";
+import { ViolationHistoryTable } from "@/components/citizen/violation-history-table";
+import {
+  formalName,
+  formatAddress,
+  formatDate,
+  formatDateTime,
+} from "@/lib/format";
 import { OFFICES } from "@/lib/config/santa-cruz";
 import { copy } from "@/lib/i18n/en";
 import { cn } from "@/lib/utils";
@@ -47,6 +53,14 @@ export default async function TicketPage({
   const ticket = ln ? await store.searchTicket(no, ln) : null;
 
   if (!ticket) return <TicketNotFound />;
+
+  // Same-person violation history (matched by full name), newest-first.
+  const norm = (s: string) => s.trim().toLowerCase();
+  const history = (await store.listTickets()).filter(
+    (h) =>
+      norm(h.violator.firstName) === norm(ticket.violator.firstName) &&
+      norm(h.violator.lastName) === norm(ticket.violator.lastName),
+  );
 
   const lnQuery = `?ln=${encodeURIComponent(ln ?? "")}`;
   const paid = ticket.status === "PAID";
@@ -78,7 +92,7 @@ export default async function TicketPage({
                     {formalName(ticket.violator)}
                   </CardTitle>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    {ticket.violator.address}
+                    {formatAddress(ticket.violator)}
                   </p>
                 </div>
                 <StatusBadge status={ticket.status} className="mt-1" />
@@ -210,6 +224,24 @@ export default async function TicketPage({
           </Card>
         </div>
       </div>
+
+      <section className="mt-8">
+        <h2 className="font-heading text-lg font-semibold tracking-tight">
+          {copy.citizen.ticket.history.title}
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {copy.citizen.ticket.history.subtitle}
+        </p>
+        <Card className="mt-3">
+          <CardContent className="px-0">
+            <ViolationHistoryTable
+              tickets={history}
+              currentTicketNo={ticket.ovrTicketNo}
+              lastName={ln ?? ""}
+            />
+          </CardContent>
+        </Card>
+      </section>
     </div>
   );
 }

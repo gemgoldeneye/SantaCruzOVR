@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { store } from "@/lib/data";
 import { PaymentForm } from "@/components/citizen/payment-form";
+import { payTicketAction } from "./actions";
 import { TicketNotFound } from "@/components/citizen/ticket-not-found";
 import { buttonVariants } from "@/components/ui/button";
 import { formalName } from "@/lib/format";
@@ -48,6 +49,7 @@ export default async function PayPage({
         basicFines={ticket.basicFinesTotal}
         penalty={ticket.penaltyAmount}
         amount={ticket.totalAmountDue}
+        payAction={payTicketAction}
       />
     </div>
   );

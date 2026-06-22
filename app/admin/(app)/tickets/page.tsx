@@ -1,14 +1,16 @@
+"use client";
+
+import { use } from "react";
 import Link from "next/link";
 import { FilePlus2, Search } from "lucide-react";
-import { store } from "@/lib/data";
 import { TicketsTable } from "@/components/admin/tickets-table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { fullName } from "@/lib/format";
 import type { TicketStatus } from "@/lib/types";
-
-export const dynamic = "force-dynamic";
+import { useTickets } from "@gelabs/ovr/offline";
 
 const TABS: { label: string; value: TicketStatus | "ALL" }[] = [
   { label: "All", value: "ALL" },
@@ -17,15 +19,30 @@ const TABS: { label: string; value: TicketStatus | "ALL" }[] = [
   { label: "Paid", value: "PAID" },
 ];
 
-export default async function TicketsPage({
+const norm = (s: string) => s.trim().toLowerCase();
+
+export default function TicketsPage({
   searchParams,
 }: {
   searchParams: Promise<{ status?: string; query?: string }>;
 }) {
-  const sp = await searchParams;
+  const sp = use(searchParams);
   const status = (sp.status as TicketStatus | "ALL") ?? "ALL";
   const query = sp.query ?? "";
-  const tickets = await store.listTickets({ status, query });
+
+  // Same filter as the server's listTickets(): status on the live-derived status,
+  // query over name / ticket no. / plate — done in memory over the local store.
+  let tickets = useTickets() ?? [];
+  if (status !== "ALL") tickets = tickets.filter((t) => t.status === status);
+  if (query) {
+    const q = norm(query);
+    tickets = tickets.filter(
+      (t) =>
+        norm(fullName(t.violator)).includes(q) ||
+        norm(t.ovrTicketNo).includes(q) ||
+        norm(t.violator.plateNumber ?? "").includes(q),
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-5 p-4 sm:p-6 lg:p-8">

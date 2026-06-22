@@ -3,7 +3,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { store } from "@/lib/data";
-import type { PaymentMethod } from "@/lib/types";
+import { initiatePayment } from "@gelabs/ovr/runtime";
+import "@/lib/runtime"; // register the runtime (config + store + providers) before use
 
 export interface PayResult {
   error?: string;
@@ -12,7 +13,7 @@ export interface PayResult {
 export async function payTicketAction(args: {
   ovrTicketNo: string;
   lastName: string;
-  method: PaymentMethod;
+  method: string;
 }): Promise<PayResult> {
   const { ovrTicketNo, lastName, method } = args;
 
@@ -30,8 +31,16 @@ export async function payTicketAction(args: {
     redirect(receiptUrl);
   }
 
+  let result;
   try {
-    await store.payTicket(ovrTicketNo, { method });
+    // Service layer resolves the payment provider. The simulated provider settles
+    // immediately (records the payment + afterPay hook + notify); a real gateway
+    // would return a redirect/QR for the citizen to complete off-site.
+    result = await initiatePayment({
+      ovrTicketNo,
+      methodId: method,
+      returnUrl: `${receiptUrl}&paid=1`,
+    });
   } catch (e) {
     return { error: e instanceof Error ? e.message : "Payment failed." };
   }
@@ -39,5 +48,9 @@ export async function payTicketAction(args: {
   revalidatePath(`/citizen/ticket/${ovrTicketNo}`);
   revalidatePath("/admin");
   revalidatePath("/admin/tickets");
+
+  if (result.kind === "redirect") {
+    redirect(result.url);
+  }
   redirect(`${receiptUrl}&paid=1`);
 }

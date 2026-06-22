@@ -25,7 +25,7 @@ export default async function ReceiptPage({
   if (!ticket) return <TicketNotFound />;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
+    <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 print:p-0">
       {paid === "1" ? (
         <div className="no-print mb-4 flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 p-3 text-sm text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300">
           <CheckCircle2 className="size-5 shrink-0" />
