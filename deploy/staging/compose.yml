@@ -1,0 +1,59 @@
+# SantaCruzOVR (e-OVR) — STAGING stack (Docker Swarm, shared-edge VPS).
+#
+# Single self-contained Next.js app (API routes live in app/api/* and talk
+# directly to managed Postgres + Redis). 1 replica, staging env. The SHARED edge
+# (deploy/edge/ in the central deploy repo) owns :80/:443 and reaches this app on
+# the external `zambal-edge` network via the `stcz-ovr-app` alias.
+#
+#   export TAG=<sha>
+#   docker stack deploy -c deploy/staging/compose.yml stcz-ovr-staging
+#
+version: "3.9"
+# NB: no top-level `name:` — `docker stack deploy` uses the legacy v3 schema
+# which rejects it. The stack name comes from the deploy command above.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: stcz-ovr-app:${TAG:-latest}
+    environment:
+      NODE_ENV: production
+      TZ: Asia/Manila
+      PORT: "4300"
+      HOSTNAME: 0.0.0.0
+      DATABASE_URL: ${OVR_DATABASE_URL}
+      REDIS_URL: ${OVR_REDIS_URL}
+      SESSION_SECRET: ${OVR_SESSION_SECRET}
+      EOVR_DATA_BACKEND: prisma
+      COOKIE_SECURE: "true"
+    networks:
+      edge: {}
+      # Shared edge reaches this as http://stcz-ovr-app:4300 (alias avoids the
+      # bare `app` name colliding with the other app stacks on zambal-edge).
+      zambal-edge: { aliases: [stcz-ovr-app] }
+    # Reach host-installed Redis (redis://host.docker.internal:6379) if used.
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4300/api/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+    deploy:
+      replicas: ${WEB_REPLICAS:-1}
+      restart_policy: { condition: any }
+      update_config: { order: start-first, parallelism: 1, delay: 8s, failure_action: rollback }
+      rollback_config: { order: stop-first, parallelism: 1 }
+
+  # NB: no per-app `edge` service. The SHARED edge (deploy/edge/) owns :80/:443
+  # and routes here via the zambal-edge alias above.
+
+networks:
+  edge:
+    driver: overlay
+    attachable: true
+  zambal-edge:
+    external: true

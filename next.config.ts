@@ -4,6 +4,9 @@ import withSerwistInit from "@serwist/next";
 // @gelabs/ovr ships precompiled (with its RSC directives), so no transpilePackages.
 // Prisma + ioredis stay external from the server bundle.
 const nextConfig: NextConfig = {
+  // Self-contained server output (`.next/standalone`) for a slim Docker runtime
+  // image (see Dockerfile). Bundles only the files the server needs.
+  output: "standalone",
   serverExternalPackages: ["@prisma/client", "ioredis"],
 };
 
