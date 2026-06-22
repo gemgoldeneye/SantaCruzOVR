@@ -10,7 +10,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAdminAuth, useSync } from "@gelabs/ovr/offline";
-import { signOutAction } from "@/app/admin/login/actions";
+import { signOutAction, changePasswordAction } from "@/app/admin/login/actions";
 import { SiteHeader } from "@/components/shared/site-header";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { SyncStatus } from "./sync-status";
@@ -40,7 +40,10 @@ export default function AdminAppLayout({
     <div className="flex min-h-dvh flex-col bg-muted/30 print:bg-transparent">
       <SiteHeader homeHref="/admin">
         <SyncStatus state={syncState} />
-        <AdminNav signOutAction={signOutAction} />
+        <AdminNav
+          signOutAction={signOutAction}
+          changePasswordAction={changePasswordAction}
+        />
       </SiteHeader>
       <main className="flex-1">{children}</main>
     </div>

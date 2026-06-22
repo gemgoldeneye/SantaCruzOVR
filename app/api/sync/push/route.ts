@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { store } from "@/lib/data";
 import { isAdminAuthed } from "@/lib/auth";
+import { logActivity } from "@/lib/activity";
 import type { PushTicketInput } from "@gelabs/ovr/data";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,21 @@ export async function POST(req: Request) {
   const results = await Promise.all(
     (tickets ?? []).map(async (t) => {
       try {
+        // Only log on a genuinely new insert (pushTicket is idempotent on re-sync).
+        const existed = await store.getTicketByNo(t.ovrTicketNo);
         const ticket = await store.pushTicket(t);
+        if (!existed) {
+          await logActivity("ticket.issued", `Issued ticket ${t.ovrTicketNo}`, {
+            actor: t.apprehendingEnforcerId
+              ? {
+                  userId: t.apprehendingEnforcerId,
+                  username: t.apprehendingEnforcerName ?? "—",
+                }
+              : undefined,
+            targetType: "ticket",
+            targetId: t.ovrTicketNo,
+          });
+        }
         return { ovrTicketNo: t.ovrTicketNo, ok: true, ticket };
       } catch (e) {
         return {
