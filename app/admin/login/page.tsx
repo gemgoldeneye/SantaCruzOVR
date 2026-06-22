@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2, LogIn, TriangleAlert, ArrowLeft } from "lucide-react";
-import { signInAction, type LoginState } from "./actions";
+import { signInAction } from "./actions";
+import { cacheCredential, verifyOffline, clearIdentity } from "@gelabs/ovr/offline";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,14 +18,52 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Seal } from "@/components/shared/seal";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { MUNICIPALITY, DEMO_ADMIN } from "@/lib/config/santa-cruz";
+import { MUNICIPALITY } from "@/lib/config/santa-cruz";
 import { copy } from "@/lib/i18n/en";
 
 export default function AdminLoginPage() {
-  const [state, formAction, isPending] = useActionState<LoginState, FormData>(
-    signInAction,
-    {},
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
+
+  // Reaching the login screen means "not signed in" — drop any stale cached
+  // identity so a signed-out device can't pass the offline gate. The offline
+  // credential is kept, so offline login still works.
+  useEffect(() => {
+    void clearIdentity();
+  }, []);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsPending(true);
+    setError(null);
+    const fd = new FormData(e.currentTarget);
+    const username = String(fd.get("username") ?? "").trim();
+    const password = String(fd.get("password") ?? "");
+    try {
+      const res = await signInAction(username, password);
+      if (res.error) {
+        setError(res.error);
+        setIsPending(false);
+        return;
+      }
+      // Cache a verifier so this account can sign in OFFLINE next time.
+      if (res.identity) await cacheCredential(username, password, res.identity);
+      // Full reload (not router.push) so SSR sees the new session cookie and the
+      // client Router Cache starts fresh.
+      window.location.assign("/admin");
+    } catch {
+      // No connection → try an OFFLINE login against the cached verifier.
+      const identity = await verifyOffline(username, password);
+      if (identity) {
+        window.location.assign("/admin");
+        return;
+      }
+      setError(
+        "No internet connection — and this account hasn't signed in offline on this device yet.",
+      );
+      setIsPending(false);
+    }
+  }
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -48,14 +87,13 @@ export default function AdminLoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form action={formAction} className="space-y-4">
+              <form onSubmit={onSubmit} className="space-y-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="username">Username</Label>
                   <Input
                     id="username"
                     name="username"
                     autoComplete="username"
-                    defaultValue={DEMO_ADMIN.username}
                     required
                   />
                 </div>
@@ -66,15 +104,14 @@ export default function AdminLoginPage() {
                     name="password"
                     type="password"
                     autoComplete="current-password"
-                    defaultValue={DEMO_ADMIN.password}
                     required
                   />
                 </div>
 
-                {state.error ? (
+                {error ? (
                   <Alert variant="destructive">
                     <TriangleAlert />
-                    <AlertDescription>{state.error}</AlertDescription>
+                    <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 ) : null}
 
@@ -94,9 +131,6 @@ export default function AdminLoginPage() {
             </CardContent>
           </Card>
 
-          <p className="mt-4 rounded-lg border bg-muted/30 p-3 text-center text-xs text-muted-foreground">
-            {DEMO_ADMIN.hint}
-          </p>
           <Link
             href="/"
             className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
