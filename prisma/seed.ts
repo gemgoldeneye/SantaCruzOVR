@@ -12,15 +12,24 @@
 
 import { PrismaClient } from "@gelabs/ovr/data/generated/client";
 import { seedRunner } from "@gelabs/ovr/data/seed-runner";
+import type { SeedUser } from "@gelabs/ovr/data";
+import { SYSTEM_ROLES } from "@gelabs/ovr/types";
 import { hash } from "@node-rs/argon2";
 import { CATALOG, OFFICERS, SEED_TICKETS } from "../lib/data/seed";
 import { DEMO_ADMIN } from "../lib/config/santa-cruz";
 
 const prisma = new PrismaClient();
 
-/** One login per officer; all share the demo password for local/dev use. */
-const SEED_USERS = [
-  { username: DEMO_ADMIN.username, officerId: OFFICERS[0].id }, // "enforcer" -> first officer
+/**
+ * Seed logins; all share the demo password for local/dev use (GE-013 roles):
+ *  - superadmin → SUPER_ADMIN (manages accounts)
+ *  - admin      → ADMIN (dashboard + tickets, no account management)
+ *  - enforcer/santos/delacruz → ENFORCER, each linked to an officer
+ */
+const SEED_USERS: SeedUser[] = [
+  { username: "superadmin", role: "SUPER_ADMIN" },
+  { username: "admin", role: "ADMIN" },
+  { username: DEMO_ADMIN.username, officerId: OFFICERS[0].id }, // "enforcer"
   { username: "santos", officerId: OFFICERS[1].id },
   { username: "delacruz", officerId: OFFICERS[2].id },
 ];
@@ -32,6 +41,7 @@ async function main() {
     officers: OFFICERS,
     tickets: SEED_TICKETS,
     users: SEED_USERS,
+    roles: SYSTEM_ROLES,
     passwordHash,
   });
 }
