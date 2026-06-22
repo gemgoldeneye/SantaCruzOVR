@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "@gelabs/ovr/styles.css";
 
+/* Tailwind v4 is filesystem-scanned and skips node_modules; @gelabs/ovr ships its UI
+   as compiled JS, so scan the package or classes used ONLY inside the SDK components
+   (e.g. bg-clip-padding on Button/Sheet, accordion-down on Accordion) get pruned from
+   production CSS. Path resolves relative to THIS file. */
+@source "../node_modules/@gelabs/ovr/dist";
+
 /* ── Coastal-civic palette (Santa Cruz, Zambales) — navy primary, teal accent ── */
 :root {
   --background: oklch(0.985 0.004 247);
