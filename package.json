@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4300",
-    "dev:mock": "DATABASE_URL= EOVR_DATA_BACKEND= next dev -p 4300",
+    "dev": "next dev -p 4302",
+    "dev:mock": "DATABASE_URL= EOVR_DATA_BACKEND= next dev -p 4302",
     "build": "next build --webpack",
-    "start": "next start -p 4300",
+    "start": "next start -p 4302",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate --schema=node_modules/@gelabs/ovr/prisma/schema.prisma",
