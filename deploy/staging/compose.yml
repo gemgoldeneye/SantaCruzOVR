@@ -28,6 +28,7 @@ services:
       REDIS_URL: ${OVR_REDIS_URL}
       SESSION_SECRET: ${OVR_SESSION_SECRET}
       EOVR_DATA_BACKEND: prisma
+      EOVR_RATE_LIMIT_DISABLED: "true"
       COOKIE_SECURE: "true"
     networks:
       edge: {}
