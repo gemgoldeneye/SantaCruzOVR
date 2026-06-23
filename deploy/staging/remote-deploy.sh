@@ -52,9 +52,20 @@ DOCKER_BUILDKIT=1 docker build -f Dockerfile --target runner -t "stcz-ovr-app:$T
 DOCKER_BUILDKIT=1 docker build -f Dockerfile --target migrator -t "stcz-ovr-migrate:$TAG" \
   --secret id=npm_token,env=GELABS_NPM_TOKEN .
 
+# Migrations + seed connect DIRECTLY to Postgres (bypassing PgBouncer) when a
+# direct OWNER url is provided. PgBouncer's pool (:6432) breaks Prisma's
+# migration advisory lock → P1002 "Timed out trying to acquire a postgres
+# advisory lock". OVR_DIRECT_DATABASE_URL should be the same owner role on the
+# direct port (:5432). Falls back to the pooled url if not set (app traffic
+# always uses the pooled OVR_DATABASE_URL via compose — unchanged).
+MIGRATE_DATABASE_URL="${OVR_DIRECT_DATABASE_URL:-$OVR_DATABASE_URL}"
+case "$MIGRATE_DATABASE_URL" in
+  *:6432/*) echo "==> NOTE: migrating through PgBouncer (:6432) — set OVR_DIRECT_DATABASE_URL (:5432) to avoid advisory-lock timeouts" ;;
+esac
+
 # Migrate every deploy (idempotent; prisma skips applied migrations).
 docker run --rm \
-  -e DATABASE_URL="$OVR_DATABASE_URL" -e TZ=Asia/Manila \
+  -e DATABASE_URL="$MIGRATE_DATABASE_URL" -e TZ=Asia/Manila \
   "stcz-ovr-migrate:$TAG" npm run db:deploy
 
 # Seed ONCE, ever (initial setup only). The OVR seed is idempotent, but we still
@@ -99,7 +110,7 @@ seed_once() {
 # the image (and unneeded — DATABASE_URL is injected below). tsx reads the env
 # from the process; PrismaClient picks up DATABASE_URL from there.
 seed_once "initial" docker run --rm \
-  -e DATABASE_URL="$OVR_DATABASE_URL" -e TZ=Asia/Manila \
+  -e DATABASE_URL="$MIGRATE_DATABASE_URL" -e TZ=Asia/Manila \
   "stcz-ovr-migrate:$TAG" npx tsx prisma/seed.ts
 
 # (Edge moved out) — the SHARED edge (deploy/edge/edge-up.sh) owns :80/:443 and

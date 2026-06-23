@@ -74,6 +74,13 @@ pipeline {
           // npm ci can't see private packages unauthenticated (npm returns 404),
           // so this is required to build. Forwarded to docker build as a SECRET.
           string(credentialsId: 'gelabs-npm-token',       variable: 'GELABS_NPM_TOKEN')
+          // OPTIONAL — direct (non-PgBouncer) OWNER url for migrations only, to
+          // avoid the advisory-lock timeout (P1002) that PgBouncer's :6432 pool
+          // causes. Same owner role, but port 5432 straight to Postgres. Once you
+          // create the `stcz-ovr-direct-database-url` credential, UNCOMMENT the
+          // next line and the matching `export` below. Until then, remote-deploy
+          // falls back to the pooled OVR_DATABASE_URL automatically.
+           ,string(credentialsId: 'stcz-ovr-direct-database-url', variable: 'OVR_DIRECT_DATABASE_URL')
         ]) {
           sshagent(credentials: [env.SSH_CRED]) {
             sh '''
@@ -90,6 +97,8 @@ export OVR_DATABASE_URL='${OVR_DATABASE_URL}'
 export OVR_REDIS_URL='${OVR_REDIS_URL}'
 export OVR_SESSION_SECRET='${OVR_SESSION_SECRET}'
 export GELABS_NPM_TOKEN='${GELABS_NPM_TOKEN}'
+# Uncomment together with the credential binding above once it exists:
+# export OVR_DIRECT_DATABASE_URL='${OVR_DIRECT_DATABASE_URL}'
 export API_REPLICAS='${API_REPLICAS}'
 export WEB_REPLICAS='${WEB_REPLICAS}'
 exec bash ${ENV_DIR}/remote-deploy.sh
