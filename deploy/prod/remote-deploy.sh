@@ -41,10 +41,35 @@ set -a; . "$ENV_DIR/.env"; set +a
 # Build the standalone app image (Prisma client generated inside the build).
 docker build -f Dockerfile --target runner -t "stcz-ovr-app:$TAG" .
 
-# Migrate + seed once (idempotent).
+# Migrate every deploy (idempotent; prisma skips applied migrations).
 docker run --rm \
   -e DATABASE_URL="$OVR_DATABASE_URL" -e TZ=Asia/Manila \
-  "stcz-ovr-app:$TAG" sh -c "npm run db:deploy && npm run db:seed"
+  "stcz-ovr-app:$TAG" npm run db:deploy
+
+# Seed ONCE, ever (initial setup only). The OVR seed is idempotent, but we still
+# gate it so it runs a single time and adds no work to later deploys. Guard: a
+# marker row in `_seed_meta`, checked/written via psql from a throwaway postgres
+# container (no psql needed on the VPS).
+seed_once() {
+  local marker="$1"; shift            # remaining args = the seed command
+  local q_check q_mark
+  q_check="CREATE TABLE IF NOT EXISTS _seed_meta (marker text PRIMARY KEY, seeded_at timestamptz NOT NULL DEFAULT now()); \
+           SELECT 1 FROM _seed_meta WHERE marker = '$marker';"
+  if docker run --rm -e PGURL="$OVR_DATABASE_URL" postgres:16-alpine \
+       sh -c 'psql "$PGURL" -tAc "'"$q_check"'"' 2>/dev/null | grep -q 1; then
+    echo "==> seed '$marker' already applied — skipping"
+    return 0
+  fi
+  echo "==> seeding '$marker' (first time)"
+  "$@"
+  q_mark="INSERT INTO _seed_meta (marker) VALUES ('$marker') ON CONFLICT DO NOTHING;"
+  docker run --rm -e PGURL="$OVR_DATABASE_URL" postgres:16-alpine \
+    sh -c 'psql "$PGURL" -c "'"$q_mark"'"' >/dev/null
+  echo "==> recorded seed marker '$marker'"
+}
+seed_once "initial" docker run --rm \
+  -e DATABASE_URL="$OVR_DATABASE_URL" -e TZ=Asia/Manila \
+  "stcz-ovr-app:$TAG" npm run db:seed
 
 # Render DOMAIN into the edge config (idempotent: regenerate from .tmpl).
 if [ ! -f "$ENV_DIR/nginx.conf.tmpl" ]; then
