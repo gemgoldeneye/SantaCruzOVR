@@ -94,9 +94,13 @@ seed_once() {
     sh -c 'psql "$PGURL" -c "'"$q_mark"'"' >/dev/null
   echo "==> recorded seed marker '$marker'"
 }
+# Run seed.ts directly (NOT `npm run db:seed`): that script is `tsx
+# --env-file=.env prisma/seed.ts`, but .env is .dockerignore'd so it's absent in
+# the image (and unneeded — DATABASE_URL is injected below). tsx reads the env
+# from the process; PrismaClient picks up DATABASE_URL from there.
 seed_once "initial" docker run --rm \
   -e DATABASE_URL="$OVR_DATABASE_URL" -e TZ=Asia/Manila \
-  "stcz-ovr-migrate:$TAG" npm run db:seed
+  "stcz-ovr-migrate:$TAG" npx tsx prisma/seed.ts
 
 # (Edge moved out) — the SHARED edge (deploy/edge/edge-up.sh) owns :80/:443 and
 # TLS for the whole host. This stack ships no nginx; nothing to render here.
