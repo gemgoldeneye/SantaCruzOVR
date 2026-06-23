@@ -54,5 +54,14 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 COPY --from=build /app/public ./public
 
+# Prisma query engine — Next's standalone tracer does NOT copy the native engine
+# binary (.so.node) for the bundled @gelabs/ovr Prisma client, so every DB query
+# throws "Prisma Client could not locate the Query Engine for runtime
+# linux-musl-openssl-3.0.x" at runtime (breaks login + all data access). Copy the
+# musl engine into the dirs the runtime client searches: the standalone server
+# bundle (.next/server) and the generator's baked output path (src/generated/client).
+COPY --from=build /app/node_modules/@gelabs/ovr/dist/generated/client/libquery_engine-linux-musl-openssl-3.0.x.so.node ./.next/server/
+COPY --from=build /app/node_modules/@gelabs/ovr/dist/generated/client/libquery_engine-linux-musl-openssl-3.0.x.so.node ./src/generated/client/
+
 EXPOSE 4300
 CMD ["node", "server.js"]
