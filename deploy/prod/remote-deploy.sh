@@ -45,10 +45,16 @@ set -a; . "$ENV_DIR/.env"; set +a
 DOCKER_BUILDKIT=1 docker build -f Dockerfile --target runner -t "stcz-ovr-app:$TAG" \
   --secret id=npm_token,env=GELABS_NPM_TOKEN .
 
+# Build the `migrator` image too: the slim runner has no prisma CLI / schema, so
+# db:deploy + db:seed must run from the full build stage. Cached layers make this
+# near-instant after the runner build above.
+DOCKER_BUILDKIT=1 docker build -f Dockerfile --target migrator -t "stcz-ovr-migrate:$TAG" \
+  --secret id=npm_token,env=GELABS_NPM_TOKEN .
+
 # Migrate every deploy (idempotent; prisma skips applied migrations).
 docker run --rm \
   -e DATABASE_URL="$OVR_DATABASE_URL" -e TZ=Asia/Manila \
-  "stcz-ovr-app:$TAG" npm run db:deploy
+  "stcz-ovr-migrate:$TAG" npm run db:deploy
 
 # Seed ONCE, ever (initial setup only). The OVR seed is idempotent, but we still
 # gate it so it runs a single time and adds no work to later deploys. Guard: a
@@ -89,7 +95,7 @@ seed_once() {
 }
 seed_once "initial" docker run --rm \
   -e DATABASE_URL="$OVR_DATABASE_URL" -e TZ=Asia/Manila \
-  "stcz-ovr-app:$TAG" npm run db:seed
+  "stcz-ovr-migrate:$TAG" npm run db:seed
 
 # Render DOMAIN into the edge config (idempotent: regenerate from .tmpl).
 if [ ! -f "$ENV_DIR/nginx.conf.tmpl" ]; then

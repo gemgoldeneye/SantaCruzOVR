@@ -35,6 +35,14 @@ COPY . .
 RUN npm run db:generate
 RUN npm run build
 
+# ---- migrator: db:deploy / db:seed run here, NOT in the slim runner ----
+# The standalone `runner` below has no node_modules, no prisma CLI, and no
+# @gelabs/ovr schema — so `prisma migrate deploy` / the seed can't run there
+# (`prisma: not found`). This target keeps the full build context (node_modules
+# incl. the prisma CLI, the schema, prisma/seed.ts, package.json scripts) so
+# remote-deploy.sh can run migrate + seed against it. Not deployed as a service.
+FROM build AS migrator
+
 # ---- runner: slim standalone image that serves the app ----
 FROM base AS runner
 ENV NODE_ENV=production
