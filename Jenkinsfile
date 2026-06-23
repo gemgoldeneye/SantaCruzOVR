@@ -104,8 +104,11 @@ EOF
           probe() {
             url="$1"
             for i in $(seq 1 30); do
-              code=$(curl -fsS -o /dev/null -w "%{http_code}" "$url" 2>/dev/null || true)
-              [ "$code" = "200" ] && { echo "OK  $url"; return 0; }
+              # -L: follow redirects so a healthy app that 307s (e.g. / -> /login)
+              # reports its FINAL status. Accept any 2xx/3xx as up; only 000 (no
+              # response), 4xx, and 5xx are treated as not-ready.
+              code=$(curl -fsSL -o /dev/null -w "%{http_code}" "$url" 2>/dev/null || true)
+              case "$code" in 2*|3*) echo "OK  $url ($code)"; return 0 ;; esac
               echo "  ($i/30) $url -> ${code:-no-response}, retrying..."; sleep 3
             done
             echo "FAIL $url"; return 1
