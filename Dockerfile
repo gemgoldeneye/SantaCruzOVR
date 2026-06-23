@@ -18,7 +18,14 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # ---- deps: install all dependencies (npm, lockfile is package-lock.json) ----
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm ci
+# @gelabs/* is a PRIVATE scope on registry.npmjs.org — npm ci 404s without auth.
+# The token is passed as a BuildKit secret (never written to an image layer or
+# cache): we materialise a temporary .npmrc for the install, then it's gone.
+RUN --mount=type=secret,id=npm_token \
+    sh -c 'if [ -f /run/secrets/npm_token ]; then \
+             printf "//registry.npmjs.org/:_authToken=%s\n" "$(cat /run/secrets/npm_token)" > .npmrc; \
+           fi; \
+           npm ci; rm -f .npmrc'
 
 # ---- build: generate the Prisma client, then compile the Next app ----
 FROM base AS build

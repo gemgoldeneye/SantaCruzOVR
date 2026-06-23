@@ -69,7 +69,11 @@ pipeline {
         withCredentials([
           string(credentialsId: 'stcz-ovr-database-url',  variable: 'OVR_DATABASE_URL'),
           string(credentialsId: 'stcz-ovr-redis-url',     variable: 'OVR_REDIS_URL'),
-          string(credentialsId: 'stcz-ovr-session-secret',variable: 'OVR_SESSION_SECRET')
+          string(credentialsId: 'stcz-ovr-session-secret',variable: 'OVR_SESSION_SECRET'),
+          // npm token for the private @gelabs/* scope on registry.npmjs.org.
+          // npm ci can't see private packages unauthenticated (npm returns 404),
+          // so this is required to build. Forwarded to docker build as a SECRET.
+          string(credentialsId: 'gelabs-npm-token',       variable: 'GELABS_NPM_TOKEN')
         ]) {
           sshagent(credentials: [env.SSH_CRED]) {
             sh '''
@@ -85,6 +89,7 @@ export ENV_DIR='${ENV_DIR}'
 export OVR_DATABASE_URL='${OVR_DATABASE_URL}'
 export OVR_REDIS_URL='${OVR_REDIS_URL}'
 export OVR_SESSION_SECRET='${OVR_SESSION_SECRET}'
+export GELABS_NPM_TOKEN='${GELABS_NPM_TOKEN}'
 export API_REPLICAS='${API_REPLICAS}'
 export WEB_REPLICAS='${WEB_REPLICAS}'
 exec bash ${ENV_DIR}/remote-deploy.sh

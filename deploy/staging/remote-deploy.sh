@@ -40,7 +40,11 @@ echo "==> wrote $ENV_DIR/.env (mode 600)"
 set -a; . "$ENV_DIR/.env"; set +a
 
 # Build the standalone app image (Prisma client generated inside the build).
-docker build -f Dockerfile --target runner -t "stcz-ovr-app:$TAG" .
+# @gelabs/* is a private npm scope — pass the auth token to `npm ci` as a
+# BuildKit secret (never baked into the image). Jenkins provides GELABS_NPM_TOKEN.
+: "${GELABS_NPM_TOKEN:?Jenkins must pass GELABS_NPM_TOKEN (credential) for the private @gelabs npm scope}"
+DOCKER_BUILDKIT=1 docker build -f Dockerfile --target runner -t "stcz-ovr-app:$TAG" \
+  --secret id=npm_token,env=GELABS_NPM_TOKEN .
 
 # Migrate every deploy (idempotent; prisma skips applied migrations).
 docker run --rm \
