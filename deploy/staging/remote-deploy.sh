@@ -62,7 +62,23 @@ seed_once() {
     return 0
   fi
   echo "==> seeding '$marker' (first time)"
-  "$@"
+  # Run the seed but DON'T let a failure abort the deploy outright. If it fails
+  # only because the data is already present (a DB seeded BEFORE this marker
+  # existed → unique/duplicate-key 23505), treat it as already-seeded: record
+  # the marker and continue. Any OTHER failure is a real error and aborts.
+  local out rc
+  set +e
+  out="$("$@" 2>&1)"; rc=$?
+  set -e
+  printf '%s\n' "$out"
+  if [ "$rc" -ne 0 ]; then
+    if printf '%s' "$out" | grep -qiE 'duplicate key|already exists|code: .?23505|unique constraint'; then
+      echo "==> seed '$marker' hit duplicate data — already seeded; recording marker and continuing"
+    else
+      echo "!! seed '$marker' failed (exit $rc) for a non-duplicate reason — aborting" >&2
+      return "$rc"
+    fi
+  fi
   q_mark="INSERT INTO _seed_meta (marker) VALUES ('$marker') ON CONFLICT DO NOTHING;"
   docker run --rm -e PGURL="$OVR_DATABASE_URL" postgres:16-alpine \
     sh -c 'psql "$PGURL" -c "'"$q_mark"'"' >/dev/null
