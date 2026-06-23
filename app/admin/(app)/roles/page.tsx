@@ -16,10 +16,15 @@ export const dynamic = "force-dynamic";
 
 export default async function RolesPage() {
   await requirePermission("roles:manage");
-  const [roles, users] = await Promise.all([
+  const [allRoles, users] = await Promise.all([
     store.listRoles(),
     store.listUsers(),
   ]);
+
+  // The Super Admin is a single bootstrap account whose credentials live in
+  // .env (SUPERADMIN_USERNAME / SUPERADMIN_PASSWORD) — it isn't a UI-managed
+  // role, so hide it from the Roles page.
+  const roles = allRoles.filter((r) => r.name !== "SUPER_ADMIN");
 
   // How many accounts use each role (shown in the editor, blocks delete).
   const usage: Record<string, number> = {};

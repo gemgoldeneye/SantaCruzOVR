@@ -15,12 +15,22 @@ import type { CreateAccountInput } from "@/components/admin/accounts-manager";
 
 const ACCOUNTS_PATH = "/admin/accounts";
 const PW_TOO_SHORT = "Password must be at least 6 characters.";
+/** The Super Admin is a single bootstrap account whose credentials live in .env
+ *  (SUPERADMIN_USERNAME / SUPERADMIN_PASSWORD) — it's never created or reassigned
+ *  through the UI. The role dropdowns already hide it; these checks are the
+ *  server-side backstop (never trust the client). */
+const SUPER_ADMIN_ROLE = "SUPER_ADMIN";
 
 export async function createAccountAction(input: CreateAccountInput) {
   await requirePermission("accounts:manage");
   const username = input.username?.trim();
   if (!username) return { error: "Username is required." };
   if (!input.password || input.password.length < 6) return { error: PW_TOO_SHORT };
+  if (input.role === SUPER_ADMIN_ROLE) {
+    return {
+      error: "The Super Admin can't be created here — its credentials are set in .env.",
+    };
+  }
   try {
     const passwordHash = await hash(input.password);
     await store.createUser({
@@ -47,6 +57,19 @@ export async function editAccountAction(
   patch: { username?: string; role?: string; officerId?: string | null },
 ) {
   await requirePermission("accounts:manage");
+  // The Super Admin is a singleton: block promoting another account into it, and
+  // block changing the Super Admin's own role away from it (anti-lockout).
+  const target = (await store.listUsers()).find((u) => u.id === id);
+  if (patch.role === SUPER_ADMIN_ROLE && target?.role !== SUPER_ADMIN_ROLE) {
+    return { error: "Super Admin can't be assigned to an account." };
+  }
+  if (
+    target?.role === SUPER_ADMIN_ROLE &&
+    patch.role &&
+    patch.role !== SUPER_ADMIN_ROLE
+  ) {
+    return { error: "The Super Admin's role can't be changed." };
+  }
   try {
     const u = await store.updateUser(id, patch);
     await logActivity("account.update", `Updated account "${u.username}"`, {

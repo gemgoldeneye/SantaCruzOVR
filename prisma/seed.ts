@@ -21,13 +21,24 @@ import { DEMO_ADMIN } from "../lib/config/santa-cruz";
 const prisma = new PrismaClient();
 
 /**
+ * SUPER_ADMIN credentials are CONFIGURABLE via env so each deployment can set
+ * its own (instead of the shared demo password). Defaults preserve local-dev
+ * behaviour — username `superadmin`, the demo password.
+ *   SUPERADMIN_USERNAME  (default: "superadmin")
+ *   SUPERADMIN_PASSWORD  (default: the demo password)
+ */
+const SUPERADMIN_USERNAME =
+  process.env.SUPERADMIN_USERNAME?.trim() || "superadmin";
+const SUPERADMIN_PASSWORD =
+  process.env.SUPERADMIN_PASSWORD || DEMO_ADMIN.password;
+
+/**
  * Seed logins; all share the demo password for local/dev use (GE-013 roles):
- *  - superadmin → SUPER_ADMIN (manages accounts)
  *  - admin      → ADMIN (dashboard + tickets, no account management)
  *  - enforcer/santos/delacruz → ENFORCER, each linked to an officer
+ * The SUPER_ADMIN is seeded separately below with its own env-driven password.
  */
 const SEED_USERS: SeedUser[] = [
-  { username: "superadmin", role: "SUPER_ADMIN" },
   { username: "admin", role: "ADMIN" },
   { username: DEMO_ADMIN.username, officerId: OFFICERS[0].id }, // "enforcer"
   { username: "santos", officerId: OFFICERS[1].id },
@@ -44,6 +55,28 @@ async function main() {
     roles: SYSTEM_ROLES,
     passwordHash,
   });
+
+  // SUPER_ADMIN — env-configurable credentials with its OWN password hash (NOT
+  // the shared demo password). Set SUPERADMIN_USERNAME / SUPERADMIN_PASSWORD in
+  // .env. Runs after seedRunner so the SUPER_ADMIN role (FK target) exists.
+  const superadminHash = await hash(SUPERADMIN_PASSWORD);
+  await prisma.user.upsert({
+    where: { username: SUPERADMIN_USERNAME },
+    update: {
+      passwordHash: superadminHash,
+      role: "SUPER_ADMIN",
+      active: true,
+      officerId: null,
+    },
+    create: {
+      username: SUPERADMIN_USERNAME,
+      passwordHash: superadminHash,
+      role: "SUPER_ADMIN",
+      active: true,
+      officerId: null,
+    },
+  });
+  console.log(`✓ Superadmin ready (username: ${SUPERADMIN_USERNAME}).`);
 }
 
 main()
