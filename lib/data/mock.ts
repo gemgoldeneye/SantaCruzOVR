@@ -6,11 +6,20 @@
 import "server-only";
 import { createMockStore } from "@gelabs/ovr/data/mock-store";
 import { santaCruzConfig } from "@/lib/config/santa-cruz";
-import { CATALOG, OFFICERS, SEED_TICKETS, SEED_NEXT_SEQ } from "@/lib/data/seed";
+import {
+  CATALOG,
+  OFFICERS,
+  SEED_TICKETS,
+  SEED_NEXT_SEQ,
+  USERS,
+  ROLES,
+} from "@/lib/data/seed";
 
 export const mockStore = createMockStore(santaCruzConfig.rules, {
   CATALOG,
   OFFICERS,
   SEED_TICKETS,
   SEED_NEXT_SEQ,
+  USERS,
+  ROLES,
 });

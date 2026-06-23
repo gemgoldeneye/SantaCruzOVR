@@ -7,7 +7,17 @@
  * real use.
  */
 
-import type { Officer, TicketRecord, ViolationCatalogItem } from "@/lib/types";
+import { SYSTEM_ROLES } from "@/lib/types";
+import type {
+  Officer,
+  TicketRecord,
+  UserAccount,
+  ViolationCatalogItem,
+} from "@/lib/types";
+
+/** Roles available in the mock store (the 3 system roles; custom roles are added
+ *  at runtime via the Roles page). */
+export const ROLES = SYSTEM_ROLES;
 
 export const CATALOG: ViolationCatalogItem[] = [
   // ── Traffic ──
@@ -104,6 +114,42 @@ export const OFFICERS: Officer[] = [
   { id: "off-novelo", name: "NOVELO, RAYMUNDO V.", badgeNo: "A176", office: "POSO" },
   { id: "off-santos", name: "SANTOS, MARIA L.", badgeNo: "B204", office: "POSO" },
   { id: "off-delacruz", name: "DELA CRUZ, JUAN P.", badgeNo: "C091", office: "POSO" },
+];
+
+/**
+ * Seed accounts for the mock store's accounts UI (GE-013). Mock login is the
+ * single demo cookie (the local SUPER_ADMIN), so these only populate the accounts
+ * list/CRUD for browsing without a database. LOCAL-DEV-ONLY.
+ */
+export const USERS: UserAccount[] = [
+  {
+    id: "usr-superadmin",
+    username: "superadmin",
+    role: "SUPER_ADMIN",
+    roleLabel: "Super Admin",
+    active: true,
+    officerId: null,
+    createdAt: "2026-01-01T00:00:00.000Z",
+  },
+  {
+    id: "usr-admin",
+    username: "admin",
+    role: "ADMIN",
+    roleLabel: "Administrator",
+    active: true,
+    officerId: null,
+    createdAt: "2026-01-01T00:00:00.000Z",
+  },
+  {
+    id: "usr-enforcer",
+    username: "enforcer",
+    role: "ENFORCER",
+    roleLabel: "Enforcer",
+    active: true,
+    officerId: OFFICERS[0].id,
+    officerName: OFFICERS[0].name,
+    createdAt: "2026-01-01T00:00:00.000Z",
+  },
 ];
 
 /** Next sequence number after the seeded tickets. */
