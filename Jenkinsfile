@@ -80,7 +80,7 @@ pipeline {
           // create the `stcz-ovr-direct-database-url` credential, UNCOMMENT the
           // next line and the matching `export` below. Until then, remote-deploy
           // falls back to the pooled OVR_DATABASE_URL automatically.
-           ,string(credentialsId: 'stcz-ovr-direct-database-url', variable: 'OVR_DIRECT_DATABASE_URL')
+           // ,string(credentialsId: 'stcz-ovr-direct-database-url', variable: 'OVR_DIRECT_DATABASE_URL')
         ]) {
           sshagent(credentials: [env.SSH_CRED]) {
             sh '''
