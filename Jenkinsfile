@@ -13,6 +13,7 @@
 //
 // Required Jenkins credentials (Secret text):
 //   stcz-ovr-database-url · stcz-ovr-redis-url · stcz-ovr-session-secret
+//   stcz-ovr-superadmin-password (bootstrap seed — the LGU's first admin login)
 // SSH: zambal-vps-ssh (SSH username with private key).
 
 pipeline {
@@ -70,6 +71,10 @@ pipeline {
           string(credentialsId: 'stcz-ovr-database-url',  variable: 'OVR_DATABASE_URL'),
           string(credentialsId: 'stcz-ovr-redis-url',     variable: 'OVR_REDIS_URL'),
           string(credentialsId: 'stcz-ovr-session-secret',variable: 'OVR_SESSION_SECRET'),
+          // Bootstrap superadmin password — seeded as the LGU's first/only admin
+          // login (username defaults to `superadmin`). Required: the seed otherwise
+          // falls back to the shared DEMO password (refused in remote-deploy).
+          string(credentialsId: 'stcz-ovr-superadmin-password', variable: 'SUPERADMIN_PASSWORD'),
           // npm token for the private @gelabs/* scope on registry.npmjs.org.
           // npm ci can't see private packages unauthenticated (npm returns 404),
           // so this is required to build. Forwarded to docker build as a SECRET.
@@ -96,6 +101,7 @@ export ENV_DIR='${ENV_DIR}'
 export OVR_DATABASE_URL='${OVR_DATABASE_URL}'
 export OVR_REDIS_URL='${OVR_REDIS_URL}'
 export OVR_SESSION_SECRET='${OVR_SESSION_SECRET}'
+export SUPERADMIN_PASSWORD='${SUPERADMIN_PASSWORD}'
 export GELABS_NPM_TOKEN='${GELABS_NPM_TOKEN}'
 # OVR_DIRECT_DATABASE_URL is intentionally not exported — the credential binding
 # above is disabled, so remote-deploy.sh falls back to the pooled OVR_DATABASE_URL.
