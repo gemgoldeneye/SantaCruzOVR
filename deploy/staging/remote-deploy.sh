@@ -23,6 +23,9 @@ echo "==> deploying SantaCruzOVR $TAG to stack $STACK (env dir: $ENV_DIR)"
 : "${OVR_DATABASE_URL:?Jenkins must pass OVR_DATABASE_URL (credential)}"
 : "${OVR_REDIS_URL:?Jenkins must pass OVR_REDIS_URL (credential)}"
 : "${OVR_SESSION_SECRET:?Jenkins must pass OVR_SESSION_SECRET (credential)}"
+# Bootstrap superadmin password — REQUIRED so the seeded admin never falls back
+# to the shared demo password in a real deployment (prisma/seed.ts default).
+: "${SUPERADMIN_PASSWORD:?Jenkins must pass SUPERADMIN_PASSWORD (credential <lgu>-ovr-superadmin-password)}"
 
 umask 077
 # Single-quote every value: this file is SOURCED below, so values with
@@ -111,6 +114,8 @@ seed_once() {
 # from the process; PrismaClient picks up DATABASE_URL from there.
 seed_once "initial" docker run --rm \
   -e DATABASE_URL="$MIGRATE_DATABASE_URL" -e TZ=Asia/Manila \
+  -e SUPERADMIN_USERNAME="${SUPERADMIN_USERNAME:-superadmin}" \
+  -e SUPERADMIN_PASSWORD="$SUPERADMIN_PASSWORD" \
   "stcz-ovr-migrate:$TAG" npx tsx prisma/seed.ts
 
 # (Edge moved out) — the SHARED edge (deploy/edge/edge-up.sh) owns :80/:443 and
