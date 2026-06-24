@@ -103,8 +103,9 @@ export OVR_REDIS_URL='${OVR_REDIS_URL}'
 export OVR_SESSION_SECRET='${OVR_SESSION_SECRET}'
 export SUPERADMIN_PASSWORD='${SUPERADMIN_PASSWORD}'
 export GELABS_NPM_TOKEN='${GELABS_NPM_TOKEN}'
-# Uncomment together with the credential binding above once it exists:
-# export OVR_DIRECT_DATABASE_URL='${OVR_DIRECT_DATABASE_URL}'
+# OVR_DIRECT_DATABASE_URL is intentionally not exported — the credential binding
+# above is disabled, so remote-deploy.sh falls back to the pooled OVR_DATABASE_URL.
+# To enable a direct (:5432) migration URL, re-add the binding above plus an export.
 export API_REPLICAS='${API_REPLICAS}'
 export WEB_REPLICAS='${WEB_REPLICAS}'
 exec bash ${ENV_DIR}/remote-deploy.sh
