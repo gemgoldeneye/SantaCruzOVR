@@ -137,7 +137,7 @@ sed "s/DOMAIN/$DOMAIN/g" "$ENV_DIR/nginx.conf.tmpl" > "$ENV_DIR/nginx.conf"
 
 # Rolling deploy.
 export TAG
-docker stack deploy -c "$ENV_DIR/compose.yml" "$STACK"
+docker stack deploy --resolve-image never -c "$ENV_DIR/compose.yml" "$STACK"
 
 echo "==> waiting for services to converge"
 deadline=$(( SECONDS + 300 ))
