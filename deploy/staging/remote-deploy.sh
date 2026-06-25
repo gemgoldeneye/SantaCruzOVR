@@ -118,6 +118,18 @@ seed_once "initial" docker run --rm \
   -e SUPERADMIN_PASSWORD="$SUPERADMIN_PASSWORD" \
   "stcz-ovr-migrate:$TAG" npx tsx prisma/seed.ts
 
+# Re-apply the SUPER_ADMIN credential on EVERY deploy (idempotent upsert; NOT gated
+# by seed_once) so a rotated SUPERADMIN_PASSWORD — or a changed SUPERADMIN_USERNAME —
+# takes effect on rebuild. SEED_SCOPE=superadmin runs ONLY the superadmin upsert;
+# the demo catalog/officers above stay one-time (seed_once "initial").
+echo "==> re-applying SUPER_ADMIN credential (every deploy)"
+docker run --rm \
+  -e DATABASE_URL="$MIGRATE_DATABASE_URL" -e TZ=Asia/Manila \
+  -e SEED_SCOPE=superadmin \
+  -e SUPERADMIN_USERNAME="${SUPERADMIN_USERNAME:-superadmin}" \
+  -e SUPERADMIN_PASSWORD="$SUPERADMIN_PASSWORD" \
+  "stcz-ovr-migrate:$TAG" npx tsx prisma/seed.ts
+
 # (Edge moved out) — the SHARED edge (deploy/edge/edge-up.sh) owns :80/:443 and
 # TLS for the whole host. This stack ships no nginx; nothing to render here.
 
