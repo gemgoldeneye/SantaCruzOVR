@@ -135,7 +135,7 @@ docker run --rm \
 
 # Rolling deploy.
 export TAG
-docker stack deploy -c "$ENV_DIR/compose.yml" "$STACK"
+docker stack deploy --resolve-image never -c "$ENV_DIR/compose.yml" "$STACK"
 
 echo "==> waiting for services to converge"
 deadline=$(( SECONDS + 300 ))
