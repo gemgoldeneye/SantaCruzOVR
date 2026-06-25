@@ -28,6 +28,10 @@ pipeline {
   parameters {
     string(name: 'API_REPLICAS', defaultValue: '', description: 'Override API replicas (blank = env default).')
     string(name: 'WEB_REPLICAS', defaultValue: '', description: 'Override web replicas (blank = env default).')
+    // SUPER_ADMIN login username — NOT a secret, so a build parameter (not a
+    // credential): rotatable per build, with a safe default so a build never breaks
+    // when it's unset. The PASSWORD stays in the superadmin-password secret credential.
+    string(name: 'SUPERADMIN_USERNAME', defaultValue: 'superadmin', description: 'SUPER_ADMIN login username (rotatable per build; re-applied to the DB on every deploy).')
   }
 
   environment {
@@ -92,6 +96,7 @@ pipeline {
               set -eu
               : "${API_REPLICAS:=}"   # params may be blank/unset — default to empty
               : "${WEB_REPLICAS:=}"   # so `set -u` below doesn't abort on them
+              : "${SUPERADMIN_USERNAME:=superadmin}"   # param default safety net
               ssh ${SSH_OPTS} ${VPS_USER}@${VPS_HOST} "cd ${DEPLOY_DIR} && bash -s" <<EOF
 set -eu
 export TAG='${TAG}'
@@ -102,6 +107,7 @@ export OVR_DATABASE_URL='${OVR_DATABASE_URL}'
 export OVR_REDIS_URL='${OVR_REDIS_URL}'
 export OVR_SESSION_SECRET='${OVR_SESSION_SECRET}'
 export SUPERADMIN_PASSWORD='${SUPERADMIN_PASSWORD}'
+export SUPERADMIN_USERNAME='${SUPERADMIN_USERNAME}'
 export GELABS_NPM_TOKEN='${GELABS_NPM_TOKEN}'
 # OVR_DIRECT_DATABASE_URL is intentionally not exported — the credential binding
 # above is disabled, so remote-deploy.sh falls back to the pooled OVR_DATABASE_URL.
