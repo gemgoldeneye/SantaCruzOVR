@@ -33,6 +33,16 @@ const SUPERADMIN_PASSWORD =
   process.env.SUPERADMIN_PASSWORD || DEMO_ADMIN.password;
 
 /**
+ * SEED_SCOPE controls how much of the seed runs:
+ *   - "all" (default): demo catalog/officers/tickets/logins PLUS the superadmin.
+ *   - "superadmin": ONLY (re)apply the env-driven superadmin — idempotent, meant to
+ *     run on EVERY deploy so a rotated SUPERADMIN_USERNAME / SUPERADMIN_PASSWORD
+ *     takes effect WITHOUT re-touching demo data (see deploy/<env>/remote-deploy.sh).
+ */
+const SEED_SCOPE =
+  process.env.SEED_SCOPE?.trim().toLowerCase() || "all";
+
+/**
  * Seed logins; all share the demo password for local/dev use (GE-013 roles):
  *  - admin      → ADMIN (dashboard + tickets, no account management)
  *  - enforcer/santos/delacruz → ENFORCER, each linked to an officer
@@ -45,20 +55,12 @@ const SEED_USERS: SeedUser[] = [
   { username: "delacruz", officerId: OFFICERS[2].id },
 ];
 
-async function main() {
-  const passwordHash = await hash(DEMO_ADMIN.password);
-  await seedRunner(prisma, {
-    catalog: CATALOG,
-    officers: OFFICERS,
-    tickets: SEED_TICKETS,
-    users: SEED_USERS,
-    roles: SYSTEM_ROLES,
-    passwordHash,
-  });
-
-  // SUPER_ADMIN — env-configurable credentials with its OWN password hash (NOT
-  // the shared demo password). Set SUPERADMIN_USERNAME / SUPERADMIN_PASSWORD in
-  // .env. Runs after seedRunner so the SUPER_ADMIN role (FK target) exists.
+/**
+ * (Re)apply the env-driven SUPER_ADMIN with its OWN password hash (NOT the shared
+ * demo password). Idempotent — the `update` branch re-applies passwordHash so a
+ * ROTATED SUPERADMIN_PASSWORD takes effect on re-run.
+ */
+async function upsertSuperadmin() {
   const superadminHash = await hash(SUPERADMIN_PASSWORD);
   await prisma.user.upsert({
     where: { username: SUPERADMIN_USERNAME },
@@ -77,6 +79,27 @@ async function main() {
     },
   });
   console.log(`✓ Superadmin ready (username: ${SUPERADMIN_USERNAME}).`);
+}
+
+async function main() {
+  // superadmin-only: re-apply credentials each deploy without re-seeding demo data.
+  if (SEED_SCOPE === "superadmin") {
+    await upsertSuperadmin();
+    return;
+  }
+
+  const passwordHash = await hash(DEMO_ADMIN.password);
+  await seedRunner(prisma, {
+    catalog: CATALOG,
+    officers: OFFICERS,
+    tickets: SEED_TICKETS,
+    users: SEED_USERS,
+    roles: SYSTEM_ROLES,
+    passwordHash,
+  });
+
+  // SUPER_ADMIN runs after seedRunner so the SUPER_ADMIN role (FK target) exists.
+  await upsertSuperadmin();
 }
 
 main()
